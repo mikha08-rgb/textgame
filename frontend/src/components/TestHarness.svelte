@@ -7,6 +7,12 @@
     parseWorldGenerationResponse,
     formatWorldForDisplay,
   } from '../prompts/worldGeneration.js';
+  import {
+    narrativeProgressionPrompt,
+    parseNarrativeResponse,
+    formatNarrativeForDisplay,
+    getSimpleTestPrompt,
+  } from '../prompts/narrativeProgression.js';
 
   // State management
   let apiKey = $state('');
@@ -84,13 +90,20 @@
         temperature,
       });
 
-      // Try to parse and format world generation responses
+      // Try to parse and format structured responses (world or narrative)
       try {
+        // Try world generation parsing first
         const worldData = parseWorldGenerationResponse(result);
         response = formatWorldForDisplay(worldData);
-      } catch (parseError) {
-        // If parsing fails, just show the raw response
-        response = result;
+      } catch (worldError) {
+        try {
+          // Try narrative progression parsing
+          const narrativeData = parseNarrativeResponse(result);
+          response = formatNarrativeForDisplay(narrativeData);
+        } catch (narrativeError) {
+          // If both fail, just show the raw response
+          response = result;
+        }
       }
 
       lastRequestTime = Date.now() - startTime;
@@ -122,7 +135,12 @@
       params: { model: 'gpt-3.5-turbo', temperature: 0.9, maxTokens: 200 },
     },
     {
-      name: 'Narrative Test',
+      name: 'Narrative Opening (Test)',
+      prompt: getSimpleTestPrompt(),
+      params: narrativeProgressionPrompt.parameters,
+    },
+    {
+      name: 'Narrative (Simple)',
       prompt:
         'Write the opening paragraph of a fantasy adventure. Include a protagonist and immediate conflict.',
       params: { model: 'gpt-3.5-turbo', temperature: 0.8, maxTokens: 300 },

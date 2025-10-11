@@ -4,9 +4,9 @@ An AI-powered text adventure game that generates completely unique worlds, stori
 
 ## 🚀 Live Demo
 
-**Test Harness:** [Deploy your own](DEPLOYMENT.md) | *Deployment URL will be added after first deploy*
+**Test Harness:** https://textgame-bbyaivkna-mishas-projects-0509f3dc.vercel.app
 
-Try the prompt testing interface to generate unique fantasy worlds and interactive narratives!
+Try the prompt testing interface to generate unique fantasy worlds and interactive narratives! Enter your OpenAI API key and test world generation and narrative progression.
 
 ## Project Overview
 

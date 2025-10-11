@@ -133,10 +133,12 @@ Continue the story now. Return ONLY the JSON object.`;
 /**
  * Parse narrative progression response from OpenAI
  * @param {string} response - Raw response text from OpenAI
+ * @param {Object} options - Parsing options
+ * @param {boolean} options.validate - Whether to validate content
  * @returns {Object} Parsed narrative data
  * @throws {Error} If response cannot be parsed
  */
-export function parseNarrativeResponse(response) {
+export function parseNarrativeResponse(response, { validate = true } = {}) {
   try {
     // Remove markdown code blocks if present
     let cleaned = response.trim();
@@ -159,6 +161,22 @@ export function parseNarrativeResponse(response) {
     for (const choice of narrative.choices) {
       if (!choice.id || !choice.text || !choice.approach) {
         throw new Error('Invalid choice structure');
+      }
+    }
+
+    // Optional validation for content quality
+    if (validate) {
+      // Check narrative length (rough word count)
+      const wordCount = narrative.narrative.trim().split(/\s+/).length;
+      if (wordCount < 50) {
+        console.warn('[Narrative] Warning: Narrative seems short', { wordCount });
+      } else if (wordCount > 500) {
+        console.warn('[Narrative] Warning: Narrative seems long', { wordCount });
+      }
+
+      // Check for second person
+      if (!/\byou\b/i.test(narrative.narrative)) {
+        console.warn('[Narrative] Warning: Narrative may not be in second person');
       }
     }
 

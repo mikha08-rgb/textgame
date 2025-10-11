@@ -2,6 +2,11 @@
   import { onMount } from 'svelte';
   import { getAPIKey, setAPIKey, removeAPIKey, hasAPIKey } from '../lib/apiKeyStorage.js';
   import { generateText } from '../lib/openai.js';
+  import {
+    worldGenerationPrompt,
+    parseWorldGenerationResponse,
+    formatWorldForDisplay,
+  } from '../prompts/worldGeneration.js';
 
   // State management
   let apiKey = $state('');
@@ -79,7 +84,15 @@
         temperature,
       });
 
-      response = result;
+      // Try to parse and format world generation responses
+      try {
+        const worldData = parseWorldGenerationResponse(result);
+        response = formatWorldForDisplay(worldData);
+      } catch (parseError) {
+        // If parsing fails, just show the raw response
+        response = result;
+      }
+
       lastRequestTime = Date.now() - startTime;
       error = '';
     } catch (err) {
@@ -95,21 +108,34 @@
     {
       name: 'Simple Test',
       prompt: 'Say "Hello, I am working!" and nothing else.',
+      params: { model: 'gpt-3.5-turbo', temperature: 0.7, maxTokens: 50 },
     },
     {
-      name: 'World Generation Test',
+      name: 'World Generation (Full)',
+      prompt: worldGenerationPrompt.getUserPrompt(),
+      params: worldGenerationPrompt.parameters,
+    },
+    {
+      name: 'World Generation (Quick)',
       prompt:
         'Create a brief fantasy world setting with one unique feature. Keep it under 100 words.',
+      params: { model: 'gpt-3.5-turbo', temperature: 0.9, maxTokens: 200 },
     },
     {
       name: 'Narrative Test',
       prompt:
         'Write the opening paragraph of a fantasy adventure. Include a protagonist and immediate conflict.',
+      params: { model: 'gpt-3.5-turbo', temperature: 0.8, maxTokens: 300 },
     },
   ];
 
   function loadPreset(preset) {
     prompt = preset.prompt;
+    if (preset.params) {
+      model = preset.params.model || model;
+      temperature = preset.params.temperature || temperature;
+      maxTokens = preset.params.maxTokens || maxTokens;
+    }
   }
 </script>
 

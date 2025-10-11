@@ -1,0 +1,114 @@
+# World Generation Prompt - Fantasy Theme
+# Generates a unique fantasy world setting for each playthrough
+# Output: Structured JSON with world details
+
+name: "World Generation - Fantasy"
+version: "1.0"
+description: "Generates a unique fantasy world with original cultures, magic systems, and conflicts"
+
+# Model parameters (recommended)
+parameters:
+  model: "gpt-3.5-turbo"
+  temperature: 0.9  # High creativity for unique worlds
+  max_tokens: 600   # Enough for detailed world description
+
+# System prompt to set the AI's role and constraints
+system_prompt: |
+  You are a creative world-building AI for a fantasy adventure game. Your role is to generate completely unique, imaginative fantasy worlds that avoid common tropes and clichés.
+
+  Each world you create must be:
+  - ORIGINAL: Avoid copying existing fantasy settings (no Middle-earth, Westeros, etc.)
+  - UNIQUE: Create new cultures, magic systems, and conflicts
+  - EVOCATIVE: Use vivid, sensory language that sparks imagination
+  - COHERENT: Ensure all elements fit together logically
+  - CONCISE: Focus on the most interesting and relevant details
+
+  Output your response ONLY as valid JSON with no additional text or markdown.
+
+# Main prompt template
+prompt: |
+  Create a completely original fantasy world for an adventure game. Generate unique elements that players have never seen before.
+
+  Your world must include:
+  1. A distinctive WORLD NAME (not similar to common fantasy worlds)
+  2. A core THEME or concept that makes this world unique
+  3. An original MAGIC SYSTEM (avoid generic elemental magic)
+  4. TWO unique CULTURES/FACTIONS with distinct characteristics
+  5. A central CONFLICT that drives the story
+  6. A UNIQUE FEATURE that sets this world apart
+
+  Requirements:
+  - Make it WEIRD and WONDERFUL - surprise the player
+  - Avoid clichés: no elves, dwarves, orcs unless radically reimagined
+  - Create fresh conflicts beyond "good vs evil"
+  - Use unexpected combinations of elements
+  - Keep descriptions vivid but concise (2-3 sentences per element)
+
+  Output Format (JSON only, no markdown):
+  {
+    "worldName": "string",
+    "theme": "string (1-2 sentences)",
+    "magicSystem": {
+      "name": "string",
+      "description": "string (2-3 sentences)"
+    },
+    "cultures": [
+      {
+        "name": "string",
+        "description": "string (2-3 sentences)",
+        "values": "string (1 sentence)"
+      },
+      {
+        "name": "string",
+        "description": "string (2-3 sentences)",
+        "values": "string (1 sentence)"
+      }
+    ],
+    "centralConflict": "string (2-3 sentences)",
+    "uniqueFeature": "string (2-3 sentences describing the most distinctive aspect)"
+  }
+
+  Generate the world now. Return ONLY the JSON object, no additional text.
+
+# Example outputs for reference (not included in actual prompt)
+examples:
+  - worldName: "The Resonance"
+    theme: "A world where emotions physically manifest as crystalline structures that grow from the ground"
+    magicSystem:
+      name: "Emotional Crystallurgy"
+      description: "Magic users sculpt and reshape emotion crystals that sprout from intense feelings. Joy crystals emit light, sorrow crystals store memories, rage crystals burn hot. Mages must balance their own emotions while harvesting and working with these living structures."
+    cultures:
+      - name: "The Numbed"
+        description: "A society that surgically removes the ability to feel strong emotions, believing passion causes the dangerous crystal growth that destroyed their ancestors. They harvest crystals from the 'Feelers' they consider primitive."
+        values: "Control through emotional suppression is the highest virtue."
+      - name: "The Conductors"
+        description: "Nomadic emotional artists who deliberately cultivate intense feelings to grow crystal gardens. They believe emotions are sacred and that the crystals are gifts from their inner selves to the world."
+        values: "Authenticity and emotional expression define humanity."
+    centralConflict: "The Numbed are strip-mining The Conductors' sacred crystal gardens to fuel their emotionless cities, while The Conductors' uncontrolled emotional outbursts spawn dangerous crystal storms that threaten both peoples."
+    uniqueFeature: "Geography constantly shifts as new emotion crystals erupt from the ground wherever sentient beings experience intense feelings, creating an ever-changing landscape of solidified joy, sorrow, and rage."
+
+  - worldName: "Palindrome"
+    theme: "Time flows backward and forward simultaneously; everyone experiences their life in both directions at once"
+    magicSystem:
+      name: "Temporal Weaving"
+      description: "Magic comes from exploiting the tension between forward and backward time. Weavers can strengthen one direction temporarily, creating pockets where time flows normally. This allows for 'remembering' the future or 'forgetting' the past, but every change creates ripples in both directions."
+    cultures:
+      - name: "The First-Last"
+        description: "People who embrace both directions equally, building their cities at temporal equilibrium points. They practice 'whole-life thinking,' making decisions based on both their past and future simultaneously."
+        values: "Balance between beginning and end creates wisdom."
+      - name: "The Chrono-Locked"
+        description: "Individuals who forcibly anchor themselves to only one temporal direction through constant meditation and magic use. They believe linear experience is the natural state and bidirectional time is a curse to overcome."
+        values: "True consciousness requires single-direction existence."
+    centralConflict: "The Chrono-Locked are constructing a massive time anchor that would force all of Palindrome into forward-only time, which The First-Last see as existential murder of half their consciousness. Meanwhile, temporal paradoxes multiply as both sides try to 'remember' their way to victory."
+    uniqueFeature: "Every conversation happens simultaneously forward and backward - people know what they're about to say because they remember saying it from the future perspective, creating a unique form of inevitable yet meaningful communication."
+
+# Notes on prompt design
+design_notes: |
+  - High temperature (0.9) encourages creative, unique outputs
+  - JSON format ensures structured, parseable data
+  - Examples show the level of originality expected (not included in actual prompt)
+  - System prompt sets creative constraints to avoid generic fantasy
+  - Emphasis on "weird and wonderful" pushes AI toward originality
+  - Two cultures create immediate potential for conflict and player choice
+  - Unique feature gives each world a memorable "hook"
+  - 600 tokens allows for detailed descriptions without bloat

@@ -2,6 +2,12 @@
 
 An AI-powered text adventure game that generates completely unique worlds, stories, and choices for every playthrough. Experience infinite replay value with D&D-depth storytelling without the mechanical complexity.
 
+## 🚀 Live Demo
+
+**Test Harness:** [Deploy your own](DEPLOYMENT.md) | *Deployment URL will be added after first deploy*
+
+Try the prompt testing interface to generate unique fantasy worlds and interactive narratives!
+
 ## Project Overview
 
 AI Adventure Engine leverages OpenAI's language models to act as a personal AI dungeon master, creating procedurally generated narratives that maintain coherence across extended gameplay sessions. Users provide their own API keys, giving them full control over their AI experience and costs.
@@ -101,6 +107,30 @@ cp .env.example .env.local
 
 **Note**: API keys are stored client-side only. No environment variables are required for the application itself - users provide their own OpenAI API keys through the web interface.
 
+## Deployment
+
+The project is configured for one-click deployment to Vercel or Netlify.
+
+### Quick Deploy
+
+**Vercel (Recommended):**
+1. Push your code to GitHub
+2. Import project at https://vercel.com/new
+3. Deploy with zero configuration (uses `vercel.json`)
+
+**Netlify:**
+1. Push your code to GitHub
+2. Import project at https://app.netlify.com/start
+3. Deploy with zero configuration (uses `netlify.toml`)
+
+**Both platforms provide:**
+- Automatic HTTPS
+- Continuous deployment on git push
+- Free tier (perfect for this project)
+- <3 minute deployment time
+
+See [DEPLOYMENT.md](DEPLOYMENT.md) for detailed deployment instructions, troubleshooting, and custom domain setup.
+
 ## Contributing
 
 This is currently a solo development project for MVP. Contribution guidelines will be added post-launch.
@@ -111,13 +141,23 @@ MIT License (or your chosen license)
 
 ## Roadmap
 
-### MVP (Current)
-- ✅ Project setup and infrastructure
-- 🔄 OpenAI API integration
-- 🔄 Fantasy theme prompt engineering
-- 🔄 Web UI development
-- 🔄 Cost management and warnings
-- 🔄 Beta testing
+### Epic 1: Foundation & Prompt Engineering (Current)
+- ✅ Project setup and infrastructure (Story 1.1)
+- ✅ OpenAI API integration with retry logic (Story 1.2)
+- ✅ API key storage and retrieval (Story 1.3)
+- ✅ Prompt testing harness (Story 1.4)
+- ✅ World generation prompt (Story 1.5)
+- ✅ Narrative progression prompt (Story 1.6)
+- ✅ Context management & error handling (Story 1.7)
+- ✅ Deployment pipeline configured (Story 1.8)
+
+### Epic 2: Web UI & Game Loop (Next)
+- 🔄 Landing page with API key input
+- 🔄 Theme selection screen
+- 🔄 Game initialization
+- 🔄 Narrative display components
+- 🔄 Choice buttons and interactions
+- 🔄 Full playthrough experience
 
 ### Post-MVP
 - Additional themes (Cyberpunk, Steampunk)

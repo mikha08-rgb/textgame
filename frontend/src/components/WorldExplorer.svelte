@@ -1,0 +1,1174 @@
+<script>
+  import { formatWorldForDisplay } from '../prompts/worldGeneration.js';
+  import {
+    worldExpansionPrompt,
+    getCultureExpansionPrompt,
+    getCharacterGenerationPrompt,
+    getLocationGenerationPrompt,
+    getLegendGenerationPrompt,
+    getHistoricalEventPrompt,
+    getFreeformQuestionPrompt,
+    parseExpansionResponse,
+  } from '../prompts/worldExpansion.js';
+
+  // Props
+  let { world, apiKey, onNewWorld } = $props();
+
+  // State
+  let activeSection = $state('overview');
+  let isGenerating = $state(false);
+  let error = $state(null);
+  let expansions = $state({
+    cultureDetails: {},
+    characters: [],
+    locations: [],
+    legends: [],
+    historicalEvents: [],
+    freeformAnswers: [],
+  });
+  let freeformQuestion = $state('');
+
+  // Derived states for section checking
+  let isCultureSection = $derived(activeSection.startsWith('culture-'));
+  let activeCultureName = $derived(isCultureSection ? activeSection.replace('culture-', '') : null);
+
+  // Call OpenAI API
+  async function callOpenAI(systemPrompt, userPrompt, parameters) {
+    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${apiKey}`,
+      },
+      body: JSON.stringify({
+        model: parameters.model,
+        messages: [
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: userPrompt },
+        ],
+        temperature: parameters.temperature,
+        max_tokens: parameters.maxTokens,
+      }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({ error: { message: 'Unknown error' } }));
+      throw new Error(errorData.error?.message || `API error: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data.choices[0].message.content;
+  }
+
+  // Expand on a culture
+  async function expandCulture(cultureName) {
+    isGenerating = true;
+    error = null;
+
+    try {
+      const prompt = getCultureExpansionPrompt(world, cultureName);
+      const response = await callOpenAI(
+        worldExpansionPrompt.systemPrompt,
+        prompt,
+        worldExpansionPrompt.parameters
+      );
+      const expansion = parseExpansionResponse(response);
+      expansions.cultureDetails[cultureName] = expansion;
+      activeSection = `culture-${cultureName}`;
+    } catch (err) {
+      error = `Failed to expand culture: ${err.message}`;
+      console.error(err);
+    } finally {
+      isGenerating = false;
+    }
+  }
+
+  // Generate a character
+  async function generateCharacter(cultureName = null) {
+    isGenerating = true;
+    error = null;
+
+    try {
+      const prompt = getCharacterGenerationPrompt(world, cultureName);
+      const response = await callOpenAI(
+        worldExpansionPrompt.systemPrompt,
+        prompt,
+        worldExpansionPrompt.parameters
+      );
+      const character = parseExpansionResponse(response);
+      character.culture = cultureName || world.cultures[0].name;
+      expansions.characters = [...expansions.characters, character];
+      activeSection = 'characters';
+    } catch (err) {
+      error = `Failed to generate character: ${err.message}`;
+      console.error(err);
+    } finally {
+      isGenerating = false;
+    }
+  }
+
+  // Generate a location
+  async function generateLocation() {
+    isGenerating = true;
+    error = null;
+
+    try {
+      const prompt = getLocationGenerationPrompt(world);
+      const response = await callOpenAI(
+        worldExpansionPrompt.systemPrompt,
+        prompt,
+        worldExpansionPrompt.parameters
+      );
+      const location = parseExpansionResponse(response);
+      expansions.locations = [...expansions.locations, location];
+      activeSection = 'locations';
+    } catch (err) {
+      error = `Failed to generate location: ${err.message}`;
+      console.error(err);
+    } finally {
+      isGenerating = false;
+    }
+  }
+
+  // Generate a legend
+  async function generateLegend() {
+    isGenerating = true;
+    error = null;
+
+    try {
+      const prompt = getLegendGenerationPrompt(world);
+      const response = await callOpenAI(
+        worldExpansionPrompt.systemPrompt,
+        prompt,
+        worldExpansionPrompt.parameters
+      );
+      const legend = parseExpansionResponse(response);
+      expansions.legends = [...expansions.legends, legend];
+      activeSection = 'legends';
+    } catch (err) {
+      error = `Failed to generate legend: ${err.message}`;
+      console.error(err);
+    } finally {
+      isGenerating = false;
+    }
+  }
+
+  // Generate a historical event
+  async function generateHistoricalEvent() {
+    isGenerating = true;
+    error = null;
+
+    try {
+      const prompt = getHistoricalEventPrompt(world);
+      const response = await callOpenAI(
+        worldExpansionPrompt.systemPrompt,
+        prompt,
+        worldExpansionPrompt.parameters
+      );
+      const event = parseExpansionResponse(response);
+      expansions.historicalEvents = [...expansions.historicalEvents, event];
+      activeSection = 'history';
+    } catch (err) {
+      error = `Failed to generate historical event: ${err.message}`;
+      console.error(err);
+    } finally {
+      isGenerating = false;
+    }
+  }
+
+  // Ask a freeform question
+  async function askQuestion() {
+    if (!freeformQuestion.trim()) return;
+
+    isGenerating = true;
+    error = null;
+
+    try {
+      const prompt = getFreeformQuestionPrompt(world, freeformQuestion);
+      const response = await callOpenAI(
+        worldExpansionPrompt.systemPrompt,
+        prompt,
+        worldExpansionPrompt.parameters
+      );
+      const answer = parseExpansionResponse(response);
+      answer.question = freeformQuestion;
+      expansions.freeformAnswers = [...expansions.freeformAnswers, answer];
+      activeSection = 'questions';
+      freeformQuestion = '';
+    } catch (err) {
+      error = `Failed to answer question: ${err.message}`;
+      console.error(err);
+    } finally {
+      isGenerating = false;
+    }
+  }
+
+  // Export world as JSON
+  function exportAsJSON() {
+    const exportData = {
+      world,
+      expansions,
+      exportedAt: new Date().toISOString(),
+    };
+    const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${world.worldName.replace(/\s+/g, '-')}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  // Export world as Markdown
+  function exportAsMarkdown() {
+    let md = `# ${world.worldName}\n\n`;
+
+    if (world.tagline) {
+      md += `*${world.tagline}*\n\n`;
+    }
+
+    md += `---\n\n`;
+    md += `## Core Theme\n\n${world.theme}\n\n`;
+
+    // Geography
+    if (world.geography) {
+      md += `## Geography\n\n${world.geography.overview}\n\n`;
+      if (world.geography.majorLocations && world.geography.majorLocations.length > 0) {
+        md += `### Major Locations\n\n`;
+        world.geography.majorLocations.forEach((loc) => {
+          md += `#### ${loc.name}\n**Type:** ${loc.type}\n\n${loc.description}\n\n*${loc.significance}*\n\n`;
+        });
+      }
+    }
+
+    // History
+    if (world.history) {
+      md += `## History\n\n`;
+      md += `### Ancient Era\n\n${world.history.ancientEra}\n\n`;
+      md += `### Formative Conflict\n\n${world.history.formativeConflict}\n\n`;
+      md += `### Recent History\n\n${world.history.recentHistory}\n\n`;
+    }
+
+    // Magic System
+    md += `## Magic System: ${world.magicSystem.name}\n\n`;
+    if (world.magicSystem.fundamentals) {
+      md += `### Fundamentals\n\n${world.magicSystem.fundamentals}\n\n`;
+      if (world.magicSystem.socialImpact) {
+        md += `### Social Impact\n\n${world.magicSystem.socialImpact}\n\n`;
+      }
+      if (world.magicSystem.cost) {
+        md += `### Cost & Limitations\n\n${world.magicSystem.cost}\n\n`;
+      }
+      if (world.magicSystem.variants) {
+        md += `### Variants & Traditions\n\n${world.magicSystem.variants}\n\n`;
+      }
+    } else if (world.magicSystem.description) {
+      md += `${world.magicSystem.description}\n\n`;
+    }
+
+    // Cultures
+    md += `## Cultures\n\n`;
+    world.cultures.forEach((culture) => {
+      md += `### ${culture.name}\n\n`;
+      if (culture.population) {
+        md += `**Population:** ${culture.population}\n\n`;
+      }
+      md += `${culture.description}\n\n`;
+
+      if (culture.socialStructure) {
+        md += `**Social Structure:** ${culture.socialStructure}\n\n`;
+      }
+      if (culture.economy) {
+        md += `**Economy:** ${culture.economy}\n\n`;
+      }
+      if (culture.values) {
+        md += `**Values:** ${culture.values}\n\n`;
+      }
+      if (culture.relationshipToMagic) {
+        md += `**Relationship to Magic:** ${culture.relationshipToMagic}\n\n`;
+      }
+      if (culture.notableFigures) {
+        md += `**Notable Figures:** ${culture.notableFigures}\n\n`;
+      }
+
+      // Expansions
+      if (expansions.cultureDetails[culture.name]) {
+        const details = expansions.cultureDetails[culture.name];
+        md += `#### Expanded Details\n\n`;
+        md += `**Daily Life:**\n${details.dailyLife}\n\n`;
+        if (details.notableFigures && details.notableFigures.length > 0) {
+          md += `**Notable Figures:**\n`;
+          details.notableFigures.forEach((fig) => {
+            md += `- **${fig.name}** (${fig.role}): ${fig.description}\n`;
+          });
+          md += `\n`;
+        }
+        if (details.locations && details.locations.length > 0) {
+          md += `**Locations:**\n`;
+          details.locations.forEach((loc) => {
+            md += `- **${loc.name}** (${loc.type}): ${loc.description}\n`;
+          });
+          md += `\n`;
+        }
+      }
+    });
+
+    // Conflicts
+    if (world.conflicts) {
+      md += `## Conflicts & Tensions\n\n`;
+      md += `### Primary Conflict\n\n${world.conflicts.primary}\n\n`;
+      if (world.conflicts.secondary && world.conflicts.secondary.length > 0) {
+        md += `### Secondary Conflicts\n\n`;
+        world.conflicts.secondary.forEach((c) => {
+          md += `#### ${c.name}\n\n${c.description}\n\n`;
+        });
+      }
+      if (world.conflicts.risingTensions) {
+        md += `### Rising Tensions\n\n${world.conflicts.risingTensions}\n\n`;
+      }
+    } else if (world.centralConflict) {
+      md += `## Central Conflict\n\n${world.centralConflict}\n\n`;
+    }
+
+    // Economy
+    if (world.economy) {
+      md += `## Economy & Trade\n\n${world.economy.overview}\n\n`;
+      if (world.economy.scarcity) {
+        md += `**Scarcity & Resources:** ${world.economy.scarcity}\n\n`;
+      }
+    }
+
+    // Daily Life
+    if (world.dailyLife) {
+      md += `## Daily Life\n\n`;
+      md += `### The Common Person\n\n${world.dailyLife.commonPerson}\n\n`;
+      if (world.dailyLife.technology) {
+        md += `### Technology & Tools\n\n${world.dailyLife.technology}\n\n`;
+      }
+    }
+
+    // Unique Feature
+    md += `## Unique Feature\n\n${world.uniqueFeature}\n\n`;
+
+    // Secrets
+    if (world.secrets) {
+      md += `## Hidden Secrets\n\n${world.secrets}\n\n`;
+    }
+
+    // Uniqueness Statement
+    if (world.uniquenessStatement) {
+      md += `## What Makes This World Unique\n\n${world.uniquenessStatement}\n\n`;
+    }
+
+    // Generated characters
+    if (expansions.characters.length > 0) {
+      md += `---\n\n## Generated Characters\n\n`;
+      expansions.characters.forEach((char) => {
+        md += `### ${char.name}\n`;
+        md += `**Age:** ${char.age} | **Role:** ${char.role} | **Culture:** ${char.culture}\n\n`;
+        md += `${char.physicalDescription}\n\n`;
+        md += `${char.personality}\n\n`;
+        md += `**Goal:** ${char.goal}\n\n`;
+        md += `**Distinctive Trait:** ${char.distinctiveTrait}\n\n`;
+        md += `**Secret:** ${char.secret}\n\n`;
+      });
+    }
+
+    // Generated locations
+    if (expansions.locations.length > 0) {
+      md += `## Generated Locations\n\n`;
+      expansions.locations.forEach((loc) => {
+        md += `### ${loc.name}\n`;
+        md += `**Type:** ${loc.type}\n\n`;
+        md += `${loc.description}\n\n`;
+        md += `**Core Law Manifestation:** ${loc.coreLawManifestation}\n\n`;
+        md += `**Inhabitants:** ${loc.inhabitants}\n\n`;
+        md += `**Current Situation:** ${loc.currentSituation}\n\n`;
+      });
+    }
+
+    // Legends
+    if (expansions.legends.length > 0) {
+      md += `## Legends & Myths\n\n`;
+      expansions.legends.forEach((legend) => {
+        md += `### ${legend.title}\n`;
+        md += `*${legend.timeframe}*\n\n`;
+        md += `${legend.story}\n\n`;
+        md += `**Moral:** ${legend.moralOrLesson}\n\n`;
+        md += `**Cultural Significance:** ${legend.culturalSignificance}\n\n`;
+      });
+    }
+
+    // Historical events
+    if (expansions.historicalEvents.length > 0) {
+      md += `## Historical Events\n\n`;
+      expansions.historicalEvents.forEach((event) => {
+        md += `### ${event.name}\n`;
+        md += `*${event.timeframe}*\n\n`;
+        md += `${event.description}\n\n`;
+        md += `**Consequences:** ${event.consequences}\n\n`;
+      });
+    }
+
+    const blob = new Blob([md], { type: 'text/markdown' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${world.worldName.replace(/\s+/g, '-')}.md`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+</script>
+
+<div class="min-h-screen bg-gradient-to-b from-purple-50 to-blue-50 p-3 md:p-6">
+  <div class="max-w-6xl mx-auto">
+    <!-- Header -->
+    <div class="bg-white rounded-lg shadow-md p-4 md:p-6 mb-6">
+      <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div>
+          <h1 class="text-2xl md:text-4xl font-bold text-gray-900 mb-2">{world.worldName}</h1>
+          {#if world.tagline}
+            <p class="text-base md:text-lg text-purple-600 italic mb-2">{world.tagline}</p>
+          {/if}
+          <p class="text-sm md:text-base text-gray-600">Explore and expand this unique fantasy world</p>
+        </div>
+        <div class="flex flex-wrap gap-2">
+          <button
+            onclick={() => exportAsJSON()}
+            class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors text-sm whitespace-nowrap"
+          >
+            Export JSON
+          </button>
+          <button
+            onclick={() => exportAsMarkdown()}
+            class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors text-sm whitespace-nowrap"
+          >
+            Export Markdown
+          </button>
+          <button
+            onclick={onNewWorld}
+            class="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors text-sm whitespace-nowrap"
+          >
+            Generate New World
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Error Display -->
+    {#if error}
+      <div class="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+        <p class="text-red-800">{error}</p>
+      </div>
+    {/if}
+
+    <!-- Loading Indicator -->
+    {#if isGenerating}
+      <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+        <div class="flex items-center gap-3">
+          <div class="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-600"></div>
+          <p class="text-blue-800">Generating content...</p>
+        </div>
+      </div>
+    {/if}
+
+    <!-- Navigation -->
+    <div class="bg-white rounded-lg shadow-md p-4 mb-6">
+      <div class="flex flex-wrap gap-2">
+        <button
+          onclick={() => (activeSection = 'overview')}
+          class="px-4 py-2 rounded-md transition-colors {activeSection === 'overview'
+            ? 'bg-purple-600 text-white'
+            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}"
+        >
+          Overview
+        </button>
+        {#each world.cultures as culture}
+          <button
+            onclick={() => {
+              if (!expansions.cultureDetails[culture.name]) {
+                expandCulture(culture.name);
+              } else {
+                activeSection = `culture-${culture.name}`;
+              }
+            }}
+            class="px-4 py-2 rounded-md transition-colors {activeSection ===
+            `culture-${culture.name}`
+              ? 'bg-purple-600 text-white'
+              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}"
+          >
+            {culture.name}
+          </button>
+        {/each}
+        <button
+          onclick={() => (activeSection = 'characters')}
+          class="px-4 py-2 rounded-md transition-colors {activeSection === 'characters'
+            ? 'bg-purple-600 text-white'
+            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}"
+        >
+          Characters ({expansions.characters.length})
+        </button>
+        <button
+          onclick={() => (activeSection = 'locations')}
+          class="px-4 py-2 rounded-md transition-colors {activeSection === 'locations'
+            ? 'bg-purple-600 text-white'
+            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}"
+        >
+          Locations ({expansions.locations.length})
+        </button>
+        <button
+          onclick={() => (activeSection = 'legends')}
+          class="px-4 py-2 rounded-md transition-colors {activeSection === 'legends'
+            ? 'bg-purple-600 text-white'
+            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}"
+        >
+          Legends ({expansions.legends.length})
+        </button>
+        <button
+          onclick={() => (activeSection = 'history')}
+          class="px-4 py-2 rounded-md transition-colors {activeSection === 'history'
+            ? 'bg-purple-600 text-white'
+            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}"
+        >
+          History ({expansions.historicalEvents.length})
+        </button>
+        <button
+          onclick={() => (activeSection = 'questions')}
+          class="px-4 py-2 rounded-md transition-colors {activeSection === 'questions'
+            ? 'bg-purple-600 text-white'
+            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}"
+        >
+          Ask Questions ({expansions.freeformAnswers.length})
+        </button>
+      </div>
+    </div>
+
+    <!-- Content Area -->
+    <div class="bg-white rounded-lg shadow-md p-6">
+      {#if activeSection === 'overview'}
+        <!-- World Overview -->
+        <div class="space-y-8">
+          <!-- Theme -->
+          <div>
+            <h2 class="text-2xl font-bold text-gray-900 mb-3">Core Theme</h2>
+            <p class="text-gray-700 leading-relaxed whitespace-pre-line">{world.theme}</p>
+          </div>
+
+          <!-- Geography -->
+          {#if world.geography}
+            <div class="bg-green-50 rounded-lg p-6">
+              <h2 class="text-2xl font-bold text-gray-900 mb-3">Geography</h2>
+              <p class="text-gray-700 leading-relaxed whitespace-pre-line mb-4">{world.geography.overview}</p>
+
+              {#if world.geography.majorLocations && world.geography.majorLocations.length > 0}
+                <h3 class="text-xl font-semibold text-gray-900 mb-3">Major Locations</h3>
+                <div class="grid md:grid-cols-2 gap-4">
+                  {#each world.geography.majorLocations as location}
+                    <div class="bg-white rounded-lg p-4">
+                      <h4 class="text-lg font-semibold text-gray-900">{location.name}</h4>
+                      <p class="text-sm text-gray-600 mb-2">{location.type}</p>
+                      <p class="text-gray-700 text-sm mb-2">{location.description}</p>
+                      <p class="text-sm text-gray-600 italic">{location.significance}</p>
+                    </div>
+                  {/each}
+                </div>
+              {/if}
+            </div>
+          {/if}
+
+          <!-- History -->
+          {#if world.history}
+            <div class="bg-amber-50 rounded-lg p-6">
+              <h2 class="text-2xl font-bold text-gray-900 mb-4">History</h2>
+              <div class="space-y-4">
+                <div>
+                  <h3 class="text-lg font-semibold text-gray-900 mb-2">Ancient Era</h3>
+                  <p class="text-gray-700 leading-relaxed whitespace-pre-line">{world.history.ancientEra}</p>
+                </div>
+                <div>
+                  <h3 class="text-lg font-semibold text-gray-900 mb-2">Formative Conflict</h3>
+                  <p class="text-gray-700 leading-relaxed whitespace-pre-line">{world.history.formativeConflict}</p>
+                </div>
+                <div>
+                  <h3 class="text-lg font-semibold text-gray-900 mb-2">Recent History</h3>
+                  <p class="text-gray-700 leading-relaxed whitespace-pre-line">{world.history.recentHistory}</p>
+                </div>
+              </div>
+            </div>
+          {/if}
+
+          <!-- Magic System -->
+          <div class="bg-purple-50 rounded-lg p-6">
+            <h2 class="text-2xl font-bold text-gray-900 mb-4">
+              Magic System: {world.magicSystem.name}
+            </h2>
+            <div class="space-y-4">
+              {#if world.magicSystem.fundamentals}
+                <div>
+                  <h3 class="text-lg font-semibold text-gray-900 mb-2">Fundamentals</h3>
+                  <p class="text-gray-700 leading-relaxed whitespace-pre-line">{world.magicSystem.fundamentals}</p>
+                </div>
+              {:else if world.magicSystem.description}
+                <p class="text-gray-700 leading-relaxed whitespace-pre-line">{world.magicSystem.description}</p>
+              {/if}
+              {#if world.magicSystem.socialImpact}
+                <div>
+                  <h3 class="text-lg font-semibold text-gray-900 mb-2">Social Impact</h3>
+                  <p class="text-gray-700 leading-relaxed whitespace-pre-line">{world.magicSystem.socialImpact}</p>
+                </div>
+              {/if}
+              {#if world.magicSystem.cost}
+                <div>
+                  <h3 class="text-lg font-semibold text-gray-900 mb-2">Cost & Limitations</h3>
+                  <p class="text-gray-700 leading-relaxed whitespace-pre-line">{world.magicSystem.cost}</p>
+                </div>
+              {/if}
+              {#if world.magicSystem.variants}
+                <div>
+                  <h3 class="text-lg font-semibold text-gray-900 mb-2">Variants & Traditions</h3>
+                  <p class="text-gray-700 leading-relaxed whitespace-pre-line">{world.magicSystem.variants}</p>
+                </div>
+              {/if}
+            </div>
+          </div>
+
+          <!-- Cultures -->
+          <div>
+            <h2 class="text-2xl font-bold text-gray-900 mb-4">Cultures</h2>
+            <div class="space-y-6">
+              {#each world.cultures as culture}
+                <div class="border-2 border-gray-200 rounded-lg p-6 hover:border-purple-300 transition-colors">
+                  <div class="flex items-start justify-between mb-4">
+                    <div>
+                      <h3 class="text-2xl font-semibold text-gray-900">{culture.name}</h3>
+                      {#if culture.population}
+                        <p class="text-sm text-gray-600">Population: {culture.population}</p>
+                      {/if}
+                    </div>
+                    <button
+                      onclick={() => expandCulture(culture.name)}
+                      disabled={isGenerating}
+                      class="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors disabled:bg-gray-400 text-sm"
+                    >
+                      Explore In Depth
+                    </button>
+                  </div>
+
+                  <p class="text-gray-700 leading-relaxed mb-4 whitespace-pre-line">{culture.description}</p>
+
+                  <div class="grid md:grid-cols-2 gap-4">
+                    {#if culture.socialStructure}
+                      <div class="bg-gray-50 rounded p-3">
+                        <h4 class="font-semibold text-gray-900 text-sm mb-2">Social Structure</h4>
+                        <p class="text-gray-700 text-sm">{culture.socialStructure}</p>
+                      </div>
+                    {/if}
+                    {#if culture.economy}
+                      <div class="bg-gray-50 rounded p-3">
+                        <h4 class="font-semibold text-gray-900 text-sm mb-2">Economy</h4>
+                        <p class="text-gray-700 text-sm">{culture.economy}</p>
+                      </div>
+                    {/if}
+                    {#if culture.values}
+                      <div class="bg-gray-50 rounded p-3">
+                        <h4 class="font-semibold text-gray-900 text-sm mb-2">Values</h4>
+                        <p class="text-gray-700 text-sm">{culture.values}</p>
+                      </div>
+                    {/if}
+                    {#if culture.relationshipToMagic}
+                      <div class="bg-gray-50 rounded p-3">
+                        <h4 class="font-semibold text-gray-900 text-sm mb-2">Relationship to Magic</h4>
+                        <p class="text-gray-700 text-sm">{culture.relationshipToMagic}</p>
+                      </div>
+                    {/if}
+                  </div>
+
+                  {#if culture.notableFigures}
+                    <div class="mt-4 bg-purple-50 rounded p-3">
+                      <h4 class="font-semibold text-gray-900 text-sm mb-2">Notable Figures</h4>
+                      <p class="text-gray-700 text-sm whitespace-pre-line">{culture.notableFigures}</p>
+                    </div>
+                  {/if}
+                </div>
+              {/each}
+            </div>
+          </div>
+
+          <!-- Conflicts -->
+          {#if world.conflicts}
+            <div class="bg-red-50 rounded-lg p-6">
+              <h2 class="text-2xl font-bold text-gray-900 mb-4">Conflicts & Tensions</h2>
+              <div class="space-y-4">
+                <div>
+                  <h3 class="text-lg font-semibold text-gray-900 mb-2">Primary Conflict</h3>
+                  <p class="text-gray-700 leading-relaxed whitespace-pre-line">{world.conflicts.primary}</p>
+                </div>
+                {#if world.conflicts.secondary && world.conflicts.secondary.length > 0}
+                  <div>
+                    <h3 class="text-lg font-semibold text-gray-900 mb-3">Secondary Conflicts</h3>
+                    <div class="space-y-3">
+                      {#each world.conflicts.secondary as conflict}
+                        <div class="bg-white rounded p-3">
+                          <h4 class="font-semibold text-gray-900 text-sm mb-1">{conflict.name}</h4>
+                          <p class="text-gray-700 text-sm">{conflict.description}</p>
+                        </div>
+                      {/each}
+                    </div>
+                  </div>
+                {/if}
+                {#if world.conflicts.risingTensions}
+                  <div>
+                    <h3 class="text-lg font-semibold text-gray-900 mb-2">Rising Tensions</h3>
+                    <p class="text-gray-700 leading-relaxed whitespace-pre-line">{world.conflicts.risingTensions}</p>
+                  </div>
+                {/if}
+              </div>
+            </div>
+          {:else if world.centralConflict}
+            <div class="bg-red-50 rounded-lg p-6">
+              <h2 class="text-2xl font-bold text-gray-900 mb-3">Central Conflict</h2>
+              <p class="text-gray-700 leading-relaxed whitespace-pre-line">{world.centralConflict}</p>
+            </div>
+          {/if}
+
+          <!-- Economy -->
+          {#if world.economy}
+            <div class="bg-yellow-50 rounded-lg p-6">
+              <h2 class="text-2xl font-bold text-gray-900 mb-4">Economy & Trade</h2>
+              <div class="space-y-4">
+                <div>
+                  <h3 class="text-lg font-semibold text-gray-900 mb-2">Overview</h3>
+                  <p class="text-gray-700 leading-relaxed whitespace-pre-line">{world.economy.overview}</p>
+                </div>
+                {#if world.economy.scarcity}
+                  <div>
+                    <h3 class="text-lg font-semibold text-gray-900 mb-2">Scarcity & Resources</h3>
+                    <p class="text-gray-700 leading-relaxed whitespace-pre-line">{world.economy.scarcity}</p>
+                  </div>
+                {/if}
+              </div>
+            </div>
+          {/if}
+
+          <!-- Daily Life -->
+          {#if world.dailyLife}
+            <div class="bg-blue-50 rounded-lg p-6">
+              <h2 class="text-2xl font-bold text-gray-900 mb-4">Daily Life</h2>
+              <div class="space-y-4">
+                <div>
+                  <h3 class="text-lg font-semibold text-gray-900 mb-2">The Common Person</h3>
+                  <p class="text-gray-700 leading-relaxed whitespace-pre-line">{world.dailyLife.commonPerson}</p>
+                </div>
+                {#if world.dailyLife.technology}
+                  <div>
+                    <h3 class="text-lg font-semibold text-gray-900 mb-2">Technology & Tools</h3>
+                    <p class="text-gray-700 leading-relaxed whitespace-pre-line">{world.dailyLife.technology}</p>
+                  </div>
+                {/if}
+              </div>
+            </div>
+          {/if}
+
+          <!-- Unique Feature -->
+          <div class="bg-indigo-50 rounded-lg p-6">
+            <h2 class="text-2xl font-bold text-gray-900 mb-3">Unique Feature</h2>
+            <p class="text-gray-700 leading-relaxed whitespace-pre-line">{world.uniqueFeature}</p>
+          </div>
+
+          <!-- Secrets -->
+          {#if world.secrets}
+            <div class="bg-slate-50 rounded-lg p-6 border-2 border-slate-300">
+              <h2 class="text-2xl font-bold text-gray-900 mb-3">Hidden Secrets</h2>
+              <p class="text-gray-700 leading-relaxed whitespace-pre-line">{world.secrets}</p>
+            </div>
+          {/if}
+
+          <!-- Uniqueness Statement -->
+          {#if world.uniquenessStatement}
+            <div class="bg-gradient-to-r from-purple-100 to-pink-100 rounded-lg p-6">
+              <h2 class="text-2xl font-bold text-gray-900 mb-3">What Makes This World Unique</h2>
+              <p class="text-gray-700 leading-relaxed whitespace-pre-line font-medium">{world.uniquenessStatement}</p>
+            </div>
+          {/if}
+
+          <!-- Quick Actions -->
+          <div class="border-t-2 border-gray-300 pt-6 mt-6">
+            <h3 class="text-xl font-semibold text-gray-900 mb-4">Explore Further</h3>
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-3">
+              <button
+                onclick={() => generateCharacter()}
+                disabled={isGenerating}
+                class="px-4 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors disabled:bg-gray-400"
+              >
+                Generate Character
+              </button>
+              <button
+                onclick={() => generateLocation()}
+                disabled={isGenerating}
+                class="px-4 py-3 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors disabled:bg-gray-400"
+              >
+                Generate Location
+              </button>
+              <button
+                onclick={() => generateLegend()}
+                disabled={isGenerating}
+                class="px-4 py-3 bg-yellow-600 text-white rounded-md hover:bg-yellow-700 transition-colors disabled:bg-gray-400"
+              >
+                Generate Legend
+              </button>
+              <button
+                onclick={() => generateHistoricalEvent()}
+                disabled={isGenerating}
+                class="px-4 py-3 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors disabled:bg-gray-400"
+              >
+                Generate Historical Event
+              </button>
+            </div>
+          </div>
+        </div>
+      {:else if isCultureSection}
+        <!-- Culture Detail View -->
+        {@const culture = world.cultures.find((c) => c.name === activeCultureName)}
+        {@const details = expansions.cultureDetails[activeCultureName]}
+
+        {#if details}
+          <div class="space-y-6">
+            <div>
+              <h2 class="text-3xl font-bold text-gray-900 mb-4">{activeCultureName}</h2>
+              <p class="text-gray-700 leading-relaxed mb-4">{culture.description}</p>
+              <p class="text-gray-600">
+                <strong>Values:</strong>
+                {culture.values}
+              </p>
+            </div>
+
+            <div>
+              <h3 class="text-2xl font-semibold text-gray-900 mb-3">Daily Life</h3>
+              <p class="text-gray-700 leading-relaxed whitespace-pre-line">{details.dailyLife}</p>
+            </div>
+
+            <div>
+              <h3 class="text-2xl font-semibold text-gray-900 mb-3">Notable Figures</h3>
+              <div class="grid md:grid-cols-2 gap-4">
+                {#each details.notableFigures as figure}
+                  <div class="border border-gray-200 rounded-lg p-4">
+                    <h4 class="text-lg font-semibold text-gray-900">{figure.name}</h4>
+                    <p class="text-sm text-gray-600 mb-2">{figure.role}</p>
+                    <p class="text-gray-700 text-sm mb-2">{figure.description}</p>
+                    <p class="text-gray-600 text-sm italic">{figure.personality}</p>
+                  </div>
+                {/each}
+              </div>
+            </div>
+
+            <div>
+              <h3 class="text-2xl font-semibold text-gray-900 mb-3">Locations</h3>
+              <div class="space-y-4">
+                {#each details.locations as location}
+                  <div class="border border-gray-200 rounded-lg p-4">
+                    <h4 class="text-lg font-semibold text-gray-900">{location.name}</h4>
+                    <p class="text-sm text-gray-600 mb-2">{location.type}</p>
+                    <p class="text-gray-700 mb-2">{location.description}</p>
+                    <p class="text-sm text-gray-600 italic">{location.significance}</p>
+                  </div>
+                {/each}
+              </div>
+            </div>
+
+            <div class="border-t pt-4">
+              <button
+                onclick={() => generateCharacter(activeCultureName)}
+                disabled={isGenerating}
+                class="px-6 py-3 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors disabled:bg-gray-400"
+              >
+                Generate Character from {activeCultureName}
+              </button>
+            </div>
+          </div>
+        {/if}
+      {:else if activeSection === 'characters'}
+        <!-- Characters View -->
+        <div class="space-y-6">
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="text-3xl font-bold text-gray-900">Characters</h2>
+            <button
+              onclick={() => generateCharacter()}
+              disabled={isGenerating}
+              class="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors disabled:bg-gray-400"
+            >
+              Generate Another Character
+            </button>
+          </div>
+
+          {#if expansions.characters.length === 0}
+            <p class="text-gray-600">No characters generated yet. Click the button above to create one!</p>
+          {:else}
+            <div class="grid md:grid-cols-2 gap-6">
+              {#each expansions.characters as character}
+                <div class="border border-gray-200 rounded-lg p-6">
+                  <div class="flex items-start justify-between mb-4">
+                    <div>
+                      <h3 class="text-2xl font-bold text-gray-900">{character.name}</h3>
+                      <p class="text-sm text-gray-600">
+                        {character.age} years old • {character.role}
+                      </p>
+                      <p class="text-sm text-purple-600">{character.culture}</p>
+                    </div>
+                  </div>
+
+                  <div class="space-y-3">
+                    <div>
+                      <h4 class="font-semibold text-gray-900 text-sm mb-1">Physical Description</h4>
+                      <p class="text-gray-700 text-sm">{character.physicalDescription}</p>
+                    </div>
+
+                    <div>
+                      <h4 class="font-semibold text-gray-900 text-sm mb-1">Personality</h4>
+                      <p class="text-gray-700 text-sm">{character.personality}</p>
+                    </div>
+
+                    <div>
+                      <h4 class="font-semibold text-gray-900 text-sm mb-1">Goal</h4>
+                      <p class="text-gray-700 text-sm">{character.goal}</p>
+                    </div>
+
+                    <div>
+                      <h4 class="font-semibold text-gray-900 text-sm mb-1">Distinctive Trait</h4>
+                      <p class="text-gray-700 text-sm">{character.distinctiveTrait}</p>
+                    </div>
+
+                    <div class="bg-gray-50 rounded p-3">
+                      <h4 class="font-semibold text-gray-900 text-sm mb-1">Secret</h4>
+                      <p class="text-gray-700 text-sm italic">{character.secret}</p>
+                    </div>
+                  </div>
+                </div>
+              {/each}
+            </div>
+          {/if}
+        </div>
+      {:else if activeSection === 'locations'}
+        <!-- Locations View -->
+        <div class="space-y-6">
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="text-3xl font-bold text-gray-900">Locations</h2>
+            <button
+              onclick={() => generateLocation()}
+              disabled={isGenerating}
+              class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors disabled:bg-gray-400"
+            >
+              Generate Another Location
+            </button>
+          </div>
+
+          {#if expansions.locations.length === 0}
+            <p class="text-gray-600">No locations generated yet. Click the button above to create one!</p>
+          {:else}
+            <div class="space-y-6">
+              {#each expansions.locations as location}
+                <div class="border border-gray-200 rounded-lg p-6">
+                  <h3 class="text-2xl font-bold text-gray-900 mb-2">{location.name}</h3>
+                  <p class="text-sm text-gray-600 mb-4">{location.type}</p>
+
+                  <div class="space-y-4">
+                    <div>
+                      <p class="text-gray-700 leading-relaxed whitespace-pre-line">{location.description}</p>
+                    </div>
+
+                    <div class="bg-purple-50 rounded p-4">
+                      <h4 class="font-semibold text-gray-900 mb-2">Core Law Manifestation</h4>
+                      <p class="text-gray-700 text-sm">{location.coreLawManifestation}</p>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 gap-4">
+                      <div>
+                        <h4 class="font-semibold text-gray-900 text-sm mb-1">Inhabitants</h4>
+                        <p class="text-gray-700 text-sm">{location.inhabitants}</p>
+                      </div>
+
+                      <div>
+                        <h4 class="font-semibold text-gray-900 text-sm mb-1">Current Situation</h4>
+                        <p class="text-gray-700 text-sm">{location.currentSituation}</p>
+                      </div>
+                    </div>
+
+                    <div>
+                      <h4 class="font-semibold text-gray-900 mb-2">Memorable Details</h4>
+                      <ul class="list-disc list-inside text-gray-700 text-sm space-y-1">
+                        {#each location.memorableDetails as detail}
+                          <li>{detail}</li>
+                        {/each}
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              {/each}
+            </div>
+          {/if}
+        </div>
+      {:else if activeSection === 'legends'}
+        <!-- Legends View -->
+        <div class="space-y-6">
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="text-3xl font-bold text-gray-900">Legends & Myths</h2>
+            <button
+              onclick={() => generateLegend()}
+              disabled={isGenerating}
+              class="px-4 py-2 bg-yellow-600 text-white rounded-md hover:bg-yellow-700 transition-colors disabled:bg-gray-400"
+            >
+              Generate Another Legend
+            </button>
+          </div>
+
+          {#if expansions.legends.length === 0}
+            <p class="text-gray-600">No legends generated yet. Click the button above to create one!</p>
+          {:else}
+            <div class="space-y-6">
+              {#each expansions.legends as legend}
+                <div class="border border-gray-200 rounded-lg p-6 bg-gradient-to-br from-yellow-50 to-orange-50">
+                  <h3 class="text-2xl font-bold text-gray-900 mb-2">{legend.title}</h3>
+                  <p class="text-sm text-gray-600 mb-4 italic">{legend.timeframe}</p>
+
+                  <div class="space-y-4">
+                    <div class="bg-white bg-opacity-70 rounded p-4">
+                      <p class="text-gray-800 leading-relaxed whitespace-pre-line">{legend.story}</p>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 gap-4">
+                      <div class="bg-white bg-opacity-70 rounded p-4">
+                        <h4 class="font-semibold text-gray-900 mb-2">Moral or Lesson</h4>
+                        <p class="text-gray-700 text-sm">{legend.moralOrLesson}</p>
+                      </div>
+
+                      <div class="bg-white bg-opacity-70 rounded p-4">
+                        <h4 class="font-semibold text-gray-900 mb-2">Cultural Significance</h4>
+                        <p class="text-gray-700 text-sm">{legend.culturalSignificance}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              {/each}
+            </div>
+          {/if}
+        </div>
+      {:else if activeSection === 'history'}
+        <!-- Historical Events View -->
+        <div class="space-y-6">
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="text-3xl font-bold text-gray-900">Historical Events</h2>
+            <button
+              onclick={() => generateHistoricalEvent()}
+              disabled={isGenerating}
+              class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors disabled:bg-gray-400"
+            >
+              Generate Another Event
+            </button>
+          </div>
+
+          {#if expansions.historicalEvents.length === 0}
+            <p class="text-gray-600">No historical events generated yet. Click the button above to create one!</p>
+          {:else}
+            <div class="space-y-6">
+              {#each expansions.historicalEvents as event}
+                <div class="border border-gray-200 rounded-lg p-6">
+                  <h3 class="text-2xl font-bold text-gray-900 mb-2">{event.name}</h3>
+                  <p class="text-sm text-gray-600 mb-4">{event.timeframe}</p>
+
+                  <div class="space-y-4">
+                    <div>
+                      <p class="text-gray-700 leading-relaxed whitespace-pre-line">{event.description}</p>
+                    </div>
+
+                    <div>
+                      <h4 class="font-semibold text-gray-900 mb-2">Key Figures</h4>
+                      <div class="grid md:grid-cols-3 gap-3">
+                        {#each event.keyFigures as figure}
+                          <div class="bg-gray-50 rounded p-3">
+                            <p class="font-semibold text-gray-900 text-sm">{figure.name}</p>
+                            <p class="text-xs text-gray-600 mb-1">{figure.role}</p>
+                            <p class="text-xs text-gray-700">{figure.impact}</p>
+                          </div>
+                        {/each}
+                      </div>
+                    </div>
+
+                    <div class="bg-blue-50 rounded p-4">
+                      <h4 class="font-semibold text-gray-900 mb-2">Consequences</h4>
+                      <p class="text-gray-700 text-sm">{event.consequences}</p>
+                    </div>
+
+                    <div>
+                      <h4 class="font-semibold text-gray-900 mb-2">Cultural Perspectives</h4>
+                      <div class="grid md:grid-cols-2 gap-4">
+                        {#each Object.entries(event.culturalPerspectives) as [cultureName, perspective]}
+                          <div class="border border-gray-200 rounded p-3">
+                            <p class="font-semibold text-gray-900 text-sm mb-1">{cultureName}</p>
+                            <p class="text-gray-700 text-sm">{perspective}</p>
+                          </div>
+                        {/each}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              {/each}
+            </div>
+          {/if}
+        </div>
+      {:else if activeSection === 'questions'}
+        <!-- Freeform Questions View -->
+        <div class="space-y-6">
+          <h2 class="text-3xl font-bold text-gray-900 mb-4">Ask About This World</h2>
+
+          <div class="bg-gray-50 rounded-lg p-6">
+            <form
+              onsubmit={(e) => {
+                e.preventDefault();
+                askQuestion();
+              }}
+              class="space-y-4"
+            >
+              <div>
+                <label for="question" class="block text-sm font-medium text-gray-700 mb-2">
+                  What would you like to know?
+                </label>
+                <input
+                  id="question"
+                  type="text"
+                  bind:value={freeformQuestion}
+                  placeholder="e.g., What do people eat in this world? What are the laws around magic use?"
+                  class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-600 focus:border-transparent"
+                  disabled={isGenerating}
+                />
+              </div>
+              <button
+                type="submit"
+                disabled={isGenerating || !freeformQuestion.trim()}
+                class="px-6 py-3 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors disabled:bg-gray-400"
+              >
+                Ask Question
+              </button>
+            </form>
+          </div>
+
+          {#if expansions.freeformAnswers.length > 0}
+            <div class="space-y-4">
+              {#each expansions.freeformAnswers as qa}
+                <div class="border border-gray-200 rounded-lg p-6">
+                  <h4 class="text-lg font-semibold text-gray-900 mb-3">Q: {qa.question}</h4>
+                  <p class="text-gray-700 leading-relaxed mb-4 whitespace-pre-line">{qa.answer}</p>
+
+                  {#if qa.relatedElements && qa.relatedElements.length > 0}
+                    <div class="text-sm text-gray-600">
+                      <strong>Related to:</strong>
+                      {qa.relatedElements.join(', ')}
+                    </div>
+                  {/if}
+                </div>
+              {/each}
+            </div>
+          {/if}
+        </div>
+      {/if}
+    </div>
+  </div>
+</div>

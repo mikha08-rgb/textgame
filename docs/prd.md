@@ -1,6 +1,6 @@
 # AI Adventure Engine - Product Requirements Document (PRD)
 
-**Version:** 1.1
+**Version:** 1.2
 **Status:** Draft
 **Last Updated:** 2025-10-11
 
@@ -39,6 +39,7 @@ The text adventure and AI storytelling space has several established players, bu
 
 | Date | Version | Description | Author |
 |------|---------|-------------|--------|
+| 2025-10-11 | v1.2 | Updated OpenAI pricing to match current rates (verified Jan 2025) | John (PM) |
 | 2025-10-11 | v1.1 | Added Competitive Analysis and Data Requirements sections | John (PM) |
 | 2025-10-11 | v1.0 | Initial PRD creation from project brief | John (PM) |
 
@@ -779,7 +780,7 @@ The MVP has minimal data storage needs, focusing on session-based gameplay witho
 
 1. Usage tracking system records: token count per API call, estimated cost per call, total session cost
 2. Token counts extracted from OpenAI API responses (usage data included in response metadata)
-3. Cost calculation uses current OpenAI pricing: GPT-3.5-turbo at $0.0015/1K input tokens, $0.002/1K output tokens (or current rates)
+3. Cost calculation uses current OpenAI pricing: GPT-3.5-turbo at $0.0005/1K input tokens, $0.0015/1K output tokens (verified January 2025)
 4. Total session cost calculated: sum of all API calls in current adventure
 5. Cost display component shows: "Estimated session cost: $0.XX" updated after each interaction
 6. Cost display positioned non-intrusively (footer or settings area, doesn't distract from story)

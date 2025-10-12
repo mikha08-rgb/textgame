@@ -64,7 +64,8 @@ const calculateBackoff = (attempt) => {
  * Make an API call to OpenAI with retry logic and timeout handling
  * @param {Object} config - Configuration object
  * @param {string} config.apiKey - OpenAI API key
- * @param {string} config.prompt - The prompt text to send
+ * @param {string} config.prompt - The prompt text to send (used as user message if systemPrompt not provided)
+ * @param {string} [config.systemPrompt] - Optional system prompt (for separate system message)
  * @param {string} [config.model='gpt-3.5-turbo'] - Model to use
  * @param {number} [config.maxTokens=500] - Maximum tokens in response
  * @param {number} [config.temperature=0.7] - Temperature for generation
@@ -76,6 +77,7 @@ const calculateBackoff = (attempt) => {
 export async function generateText({
   apiKey,
   prompt,
+  systemPrompt,
   model = 'gpt-3.5-turbo',
   maxTokens = 500,
   temperature = 0.7,
@@ -111,6 +113,14 @@ export async function generateText({
 
       console.log(`[OpenAI] Attempt ${attempt + 1}/${maxRetries + 1}`);
 
+      // Build messages array (use separate system/user messages if systemPrompt provided)
+      const messages = systemPrompt
+        ? [
+            { role: 'system', content: systemPrompt },
+            { role: 'user', content: prompt }
+          ]
+        : [{ role: 'user', content: prompt }];
+
       // Make the API call
       const response = await fetch('https://api.openai.com/v1/chat/completions', {
         method: 'POST',
@@ -120,7 +130,7 @@ export async function generateText({
         },
         body: JSON.stringify({
           model,
-          messages: [{ role: 'user', content: prompt }],
+          messages,
           max_tokens: maxTokens,
           temperature,
         }),
@@ -175,7 +185,11 @@ export async function generateText({
         tokensUsed: data.usage,
       });
 
-      return generatedText.trim();
+      // Return both text and usage data
+      return {
+        text: generatedText.trim(),
+        usage: data.usage || { prompt_tokens: 0, completion_tokens: 0, total_tokens: 0 }
+      };
     } catch (error) {
       lastError = error;
 
@@ -229,20 +243,59 @@ export async function generateText({
  * @returns {Promise<boolean>} True if key is valid
  */
 export async function testAPIKey(apiKey) {
+  console.log('[OpenAI] testAPIKey starting...');
   try {
-    await generateText({
+    const result = await generateText({
       apiKey,
       prompt: 'Say "test" and nothing else.',
       maxTokens: 10,
-      maxRetries: 0,
-      timeout: 10000,
+      maxRetries: 1,
+      timeout: 30000, // Increased to 30 seconds
     });
+    console.log('[OpenAI] testAPIKey success');
     return true;
   } catch (error) {
+    console.log('[OpenAI] testAPIKey error:', error.name, error.message);
     if (error instanceof InvalidAPIKeyError) {
       return false;
     }
     // For other errors (network, timeout, etc), we can't determine key validity
     throw error;
+  }
+}
+
+/**
+ * Validate API key and throw descriptive errors
+ * @param {string} apiKey - OpenAI API key to validate
+ * @returns {Promise<void>} Resolves if valid, throws if invalid
+ * @throws {Error} With user-friendly error messages
+ */
+export async function validateAPIKey(apiKey) {
+  console.log('[OpenAI] validateAPIKey called');
+  try {
+    const isValid = await testAPIKey(apiKey);
+    console.log('[OpenAI] testAPIKey result:', isValid);
+    if (!isValid) {
+      throw new Error('Invalid API key. Please check your OpenAI API key and try again.');
+    }
+  } catch (error) {
+    console.log('[OpenAI] validateAPIKey error:', error.name, error.message);
+
+    if (error instanceof InvalidAPIKeyError) {
+      throw new Error('Invalid API key. Please check your OpenAI API key and try again.');
+    } else if (error instanceof NetworkError) {
+      throw new Error('Network error. Please check your internet connection and try again.');
+    } else if (error instanceof TimeoutError) {
+      throw new Error('Request timed out. Please try again.');
+    } else if (error instanceof RateLimitError) {
+      throw new Error('Rate limit exceeded. Please wait a moment and try again.');
+    } else if (error instanceof OpenAIAPIError) {
+      // Handle any other OpenAI API errors
+      throw new Error(`API Error: ${error.message}`);
+    } else {
+      // Preserve the original error message for debugging
+      console.error('[OpenAI] Unexpected error type:', error);
+      throw new Error(error.message || 'Could not validate API key. Please try again.');
+    }
   }
 }

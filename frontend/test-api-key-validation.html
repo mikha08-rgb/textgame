@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Key Validation Test</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            background: #000;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        .error { color: red; }
+        .success { color: green; }
+        .info { color: blue; }
+        pre {
+            background: #f5f5f5;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>API Key Validation Test</h1>
+
+    <div class="test-section">
+        <h2>Test 1: Format Validation</h2>
+        <input type="text" id="formatTest" placeholder="Enter API key to test format">
+        <button onclick="testFormat()">Test Format</button>
+        <div id="formatResult"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>Test 2: Storage</h2>
+        <input type="text" id="storageTest" placeholder="Enter API key to test storage">
+        <button onclick="testStorage()">Save to Storage</button>
+        <button onclick="loadStorage()">Load from Storage</button>
+        <button onclick="clearStorage()">Clear Storage</button>
+        <div id="storageResult"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>Test 3: OpenAI Validation (Real API Call)</h2>
+        <p class="info">⚠️ This will make a real API call to OpenAI</p>
+        <input type="password" id="apiTest" placeholder="Enter valid OpenAI API key">
+        <button onclick="testAPIValidation()">Validate with OpenAI</button>
+        <div id="apiResult"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>Current Storage State</h2>
+        <button onclick="checkStorage()">Check Storage</button>
+        <pre id="storageState"></pre>
+    </div>
+
+    <script type="module">
+        import { isValidAPIKeyFormat, setAPIKey, getAPIKey, removeAPIKey } from './src/lib/apiKeyStorage.js';
+        import { validateAPIKey } from './src/lib/openai.js';
+
+        window.testFormat = function() {
+            const input = document.getElementById('formatTest').value;
+            const result = document.getElementById('formatResult');
+            try {
+                const isValid = isValidAPIKeyFormat(input);
+                result.innerHTML = `<p class="${isValid ? 'success' : 'error'}">
+                    Format valid: ${isValid}
+                    ${!isValid ? '<br>Keys must start with "sk-" and be at least 20 characters' : ''}
+                </p>`;
+            } catch (error) {
+                result.innerHTML = `<p class="error">Error: ${error.message}</p>`;
+            }
+        };
+
+        window.testStorage = function() {
+            const input = document.getElementById('storageTest').value;
+            const result = document.getElementById('storageResult');
+            try {
+                setAPIKey(input);
+                result.innerHTML = '<p class="success">✓ Key saved successfully</p>';
+                checkStorage();
+            } catch (error) {
+                result.innerHTML = `<p class="error">✗ Error: ${error.message}</p>`;
+            }
+        };
+
+        window.loadStorage = function() {
+            const result = document.getElementById('storageResult');
+            try {
+                const key = getAPIKey();
+                if (key) {
+                    const masked = key.substring(0, 10) + '...' + key.substring(key.length - 6);
+                    result.innerHTML = `<p class="success">✓ Loaded: ${masked}</p>`;
+                } else {
+                    result.innerHTML = '<p class="info">No key in storage</p>';
+                }
+            } catch (error) {
+                result.innerHTML = `<p class="error">✗ Error: ${error.message}</p>`;
+            }
+        };
+
+        window.clearStorage = function() {
+            const result = document.getElementById('storageResult');
+            try {
+                removeAPIKey();
+                result.innerHTML = '<p class="success">✓ Storage cleared</p>';
+                checkStorage();
+            } catch (error) {
+                result.innerHTML = `<p class="error">✗ Error: ${error.message}</p>`;
+            }
+        };
+
+        window.testAPIValidation = async function() {
+            const input = document.getElementById('apiTest').value;
+            const result = document.getElementById('apiResult');
+            const button = event.target;
+
+            if (!input) {
+                result.innerHTML = '<p class="error">Please enter an API key</p>';
+                return;
+            }
+
+            try {
+                button.disabled = true;
+                result.innerHTML = '<p class="info">⏳ Validating with OpenAI...</p>';
+
+                await validateAPIKey(input);
+
+                result.innerHTML = '<p class="success">✓ API key is valid!</p>';
+            } catch (error) {
+                result.innerHTML = `<p class="error">✗ Validation failed: ${error.message}</p>`;
+                console.error('Validation error:', error);
+            } finally {
+                button.disabled = false;
+            }
+        };
+
+        window.checkStorage = function() {
+            const state = document.getElementById('storageState');
+            try {
+                const key = getAPIKey();
+                const rawStorage = localStorage.getItem('ai_adventure_api_key');
+
+                state.textContent = JSON.stringify({
+                    hasKey: !!key,
+                    keyLength: key ? key.length : 0,
+                    rawStorageExists: !!rawStorage,
+                    rawStorageLength: rawStorage ? rawStorage.length : 0,
+                    allKeys: Object.keys(localStorage)
+                }, null, 2);
+            } catch (error) {
+                state.textContent = `Error: ${error.message}`;
+            }
+        };
+
+        // Initial check
+        checkStorage();
+    </script>
+</body>
+</html>

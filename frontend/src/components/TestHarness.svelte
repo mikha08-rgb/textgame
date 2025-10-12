@@ -101,8 +101,9 @@
           const narrativeData = parseNarrativeResponse(result);
           response = formatNarrativeForDisplay(narrativeData);
         } catch (narrativeError) {
-          // If both fail, just show the raw response
-          response = result;
+          // If both fail, remove reasoning blocks and show response
+          let cleaned = result.replace(/<reasoning>[\s\S]*?<\/reasoning>/gi, '').trim();
+          response = cleaned || result;
         }
       }
 
@@ -125,7 +126,7 @@
     },
     {
       name: 'World Generation (Full)',
-      prompt: worldGenerationPrompt.getUserPrompt(),
+      promptGenerator: () => worldGenerationPrompt.getUserPrompt(), // Function to regenerate each time
       params: worldGenerationPrompt.parameters,
     },
     {
@@ -148,7 +149,13 @@
   ];
 
   function loadPreset(preset) {
-    prompt = preset.prompt;
+    // If preset has a promptGenerator function, call it fresh each time
+    if (preset.promptGenerator) {
+      prompt = preset.promptGenerator();
+    } else {
+      prompt = preset.prompt;
+    }
+
     if (preset.params) {
       model = preset.params.model || model;
       temperature = preset.params.temperature || temperature;

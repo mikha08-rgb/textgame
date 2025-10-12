@@ -1,23 +1,24 @@
-# AI Adventure Engine
+# AI Worldbuilding Engine
 
-An AI-powered text adventure game that generates completely unique worlds, stories, and choices for every playthrough. Experience infinite replay value with D&D-depth storytelling without the mechanical complexity.
+An AI-powered worldbuilding tool that generates rich, detailed fantasy worlds for creative writers, game designers, and worldbuilding hobbyists. Generate complete worlds with cultures, magic systems, histories, and conflicts in minutes, then expand any aspect on-demand.
 
 ## 🚀 Live Demo
 
-**Test Harness:** https://textgame-bbyaivkna-mishas-projects-0509f3dc.vercel.app
+**Live App:** https://textgame-bbyaivkna-mishas-projects-0509f3dc.vercel.app
 
-Try the prompt testing interface to generate unique fantasy worlds and interactive narratives! Enter your OpenAI API key and test world generation and narrative progression.
+Enter your OpenAI API key and generate comprehensive fantasy worlds! Explore cultures, create characters and locations, generate legends, and export everything as JSON or Markdown for use in your projects.
 
 ## Project Overview
 
-AI Adventure Engine leverages OpenAI's language models to act as a personal AI dungeon master, creating procedurally generated narratives that maintain coherence across extended gameplay sessions. Users provide their own API keys, giving them full control over their AI experience and costs.
+AI Worldbuilding Engine leverages OpenAI's language models to create complete, interconnected fantasy worlds with depth comparable to published D&D settings—in just 2-3 minutes. Users provide their own API keys, giving them full control over their AI experience and costs.
 
 ## Features (MVP)
 
-- **Unique World Generation**: Every playthrough creates an entirely new world with original cultures, conflicts, and themes
-- **Fantasy Theme**: Immersive fantasy adventures with magic systems and original lore (launch theme)
-- **Meaningful Choices**: 2-4 choice-based decision points that impact story direction
-- **Session-Based Gameplay**: No save/load system - each adventure is a single session
+- **Comprehensive World Generation**: Every world includes 10 detailed sections: theme, geography, history, magic system, cultures, conflicts, economy, daily life, unique features, and hidden secrets
+- **On-Demand Content Creation**: Generate characters, locations, legends, and historical events specific to your world
+- **Culture Exploration**: Dive deep into any culture with expanded daily life, notable figures, and locations
+- **Freeform Questioning**: Ask anything about your world and get coherent, context-aware answers
+- **Export Functionality**: Download complete worlds as JSON or Markdown for integration with Notion, Scrivener, or other tools
 - **Cost Transparency**: Real-time API usage tracking and cost warnings
 - **Mobile-Responsive**: Works seamlessly on desktop and mobile devices
 
@@ -90,7 +91,7 @@ AI Adventure Engine leverages OpenAI's language models to act as a personal AI d
 
 ## Development Workflow
 
-1. **Prompt Engineering** (Weeks 1-3): Create and refine AI prompts for world generation, narrative progression, and choice generation
+1. **Prompt Engineering** (Weeks 1-3): Create and refine AI prompts for world generation and content expansion
 2. **UI Development** (Weeks 3-4): Build web interface components
 3. **Integration** (Week 5): Connect UI to OpenAI API with error handling
 4. **Testing** (Week 6): Manual testing and prompt refinement
@@ -141,35 +142,39 @@ MIT License (or your chosen license)
 
 ## Roadmap
 
-### Epic 1: Foundation & Prompt Engineering (Current)
+### Epic 1: Foundation & Prompt Engineering ✅ (Complete)
 - ✅ Project setup and infrastructure (Story 1.1)
 - ✅ OpenAI API integration with retry logic (Story 1.2)
 - ✅ API key storage and retrieval (Story 1.3)
 - ✅ Prompt testing harness (Story 1.4)
 - ✅ World generation prompt (Story 1.5)
-- ✅ Narrative progression prompt (Story 1.6)
+- ✅ World expansion prompts - characters, locations, legends, events (Story 1.6)
 - ✅ Context management & error handling (Story 1.7)
 - ✅ Deployment pipeline configured (Story 1.8)
 
-### Epic 2: Web UI & Game Loop (Next)
-- 🔄 Landing page with API key input
-- 🔄 Theme selection screen
-- 🔄 Game initialization
-- 🔄 Narrative display components
-- 🔄 Choice buttons and interactions
-- 🔄 Full playthrough experience
+### Epic 2: Web UI & Worldbuilding Experience ✅ (Complete)
+- ✅ Landing page with API key input
+- ✅ Theme selection screen
+- ✅ World generation with progress tracking
+- ✅ World explorer with organized sections
+- ✅ Culture exploration and expansion
+- ✅ On-demand content generation (characters, locations, legends, historical events)
+- ✅ Freeform world questioning
+- ✅ Export functionality (JSON and Markdown)
 
 ### Post-MVP
-- Additional themes (Cyberpunk, Steampunk)
-- Save/load functionality
-- Story sharing features
-- Multi-AI provider support
+- Additional themes (Cyberpunk, Steampunk, Sci-Fi, Horror)
+- Save/load functionality (cloud storage)
+- World sharing features (public gallery, remixing)
+- Multi-AI provider support (Anthropic, local models)
 - User accounts and preferences
-- Advanced prompt customization
+- Advanced prompt customization (tone, complexity, originality)
+- Collaborative worldbuilding (team editing)
+- Image generation (maps, character portraits)
 
 ## Contact
 
-For questions or feedback about AI Adventure Engine, please open an issue or contact [your contact info].
+For questions or feedback about AI Worldbuilding Engine, please open an issue or contact [your contact info].
 
 ---
 

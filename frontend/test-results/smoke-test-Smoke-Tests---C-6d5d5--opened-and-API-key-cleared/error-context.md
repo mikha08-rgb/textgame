@@ -1,0 +1,200 @@
+# Page snapshot
+
+```yaml
+- main [ref=e3]:
+  - generic [ref=e5]:
+    - generic [ref=e7]:
+      - generic [ref=e8]:
+        - heading "Kabrithean Tides" [level=1] [ref=e9]
+        - paragraph [ref=e10]: Where every memory burns its presence into the living stones of history.
+        - paragraph [ref=e11]: Explore and expand this unique fantasy world
+      - generic [ref=e12]:
+        - button "Export JSON" [ref=e13]
+        - button "Export Markdown" [ref=e14]
+        - button "Generate New World" [ref=e15]
+    - generic [ref=e17]:
+      - button "Overview" [ref=e18]
+      - button "Ferran Archivists" [ref=e19]
+      - button "Taenor Sandrunners" [ref=e20]
+      - button "Vell Dreamers" [ref=e21]
+      - button "Characters (0)" [ref=e22]
+      - button "Locations (0)" [ref=e23]
+      - button "Legends (0)" [ref=e24]
+      - button "History (0)" [ref=e25]
+      - button "Ask Questions (0)" [ref=e26]
+    - generic [ref=e28]:
+      - generic [ref=e29]:
+        - heading "Core Theme" [level=2] [ref=e30]
+        - paragraph [ref=e31]: In Kabrithean Tides, memories are mechanized by heat — imbued in crystalline formations known as Kabrite, which store thermal imprints of significant events when exposed to temperatures exceeding 180°C for at least five minutes. These are physically crystallized, forming Memory Shards that vary in hue based on emotional intensity, ranging from pale blue for contentment to harsh red for anger. This crystallization process happens predominantly in the mining regions of Taenor Sands and is central to both personal and communal memory-keeping practices. The heat-memory exchange is so integral that legal systems like the Hearth Council in Ferran Summit use Memory Shards as irrefutable evidence in trials, their authenticity verified by Resonance Seekers who measure vibrational harmonics unique to individual shards. The presence of these shards affects all, from architecture that adapts to clandestinely stored memories, to the relationship of people with their environment, shaping their very interaction with the earth they tread upon.
+      - generic [ref=e32]:
+        - heading "Geography" [level=2] [ref=e33]
+        - paragraph [ref=e34]: "Kabrithean Tides is a land of diverse climates shaped by its core law, featuring three primary regions: the Taenor Sands with its blistering heat and abundant Kabrite deposits; the cool, mist-laden Vell Thickets where Memory Fogs form, enveloping forgotten pasts in yellow haze; and the crystalline alpine heights of Ferran Summit where memory heat is trapped by cold winds. Taenor Sands houses relentless heat, crucial for Kabrite activation but dangerous as intense thermal fluctuations can alter existing memories or crystalize new ones unintentionally. Vell Thickets, conversely, is a source of Dream Dew, a rare liquid traded for its memory-dampening effects. Meanwhile, at Ferran Summit, Memory Caches are etched into cliff-sides, serving as historical records visible for leagues."
+        - heading "Major Locations" [level=3] [ref=e35]
+        - generic [ref=e36]:
+          - generic [ref=e37]:
+            - heading "Ferran Summit" [level=4] [ref=e38]
+            - paragraph [ref=e39]: city
+            - paragraph [ref=e40]: Cradled in the arms of the Frosted Peaks, Ferran Summit is a city built from Baku Stones, specifically chosen for their heat absorbance, thus preserving the purity of environmental memories expressed in its icy visage. It holds the only Hymnal Archives, where auditory memories resound eternally within cavernous halls.
+            - paragraph [ref=e41]: As a judicial hub where Memory Shards are authenticated and preserved, Ferran Summit maintains societal balance by integrating the truth of the past into present governance.
+          - generic [ref=e42]:
+            - heading "Taenor Sands" [level=4] [ref=e43]
+            - paragraph [ref=e44]: region
+            - paragraph [ref=e45]: Taenor Sands experiences constant heatwaves with shifting dunes conducive for natural Kabrite formation. The sands act as a natural incubator for raw memoristics, which traders seek to harvest with controlled thermal techniques.
+            - paragraph [ref=e46]: Home to the Kabrite harvesters, it acts as the economic engine for memory trade, driving both cultural preservation and technological advancement.
+          - generic [ref=e47]:
+            - heading "Vell Thickets" [level=4] [ref=e48]
+            - paragraph [ref=e49]: forest
+            - paragraph [ref=e50]: A dense labyrinth of fog-swathed undergrowth, Vell Thickets hold within their bounds the enigmatic Memory Fogs that periodically release emotional vapor trails from ancient times. The rustic treehouses built among the canopy reverberate with past converses, softened by the ambient moisture.
+            - paragraph [ref=e51]: Providing sanctuary to dissidents and seekers, Vell Thickets is critical for its Dream Dew trade that influences the emotional tone of the entire land.
+      - generic [ref=e52]:
+        - heading "History" [level=2] [ref=e53]
+        - generic [ref=e54]:
+          - generic [ref=e55]:
+            - heading "Ancient Era" [level=3] [ref=e56]
+            - paragraph [ref=e57]: The earliest eras before memory crystallization saw fragmented tribes embroiled in disputes, barely coherent in historical continuity. Kabrite's discovery occurred when a comet ignited a dormant volcanic field, fusing memory with heat in a rare alchemical reaction now sacredly referred to as the Ember Genesis. This event redefined perceptions of time and history, anchoring collective memories into crystalline form and birthing the age of Record Keepers who crafted the first Memory Stones.
+          - generic [ref=e58]:
+            - heading "Formative Conflict" [level=3] [ref=e59]
+            - paragraph [ref=e60]: The Ember Wars erupted over access to Taenor Sands' rich Kabrite veins, as settlements vied for control of these memory-rich resources. Led by the charismatic Luminar Kevas, the Vell Thickets sought to usurp control but faced determined resistance from the Ferran Guardians, custodians of ethical memory use. Kevas' tactical innovation, the Memory Singes, temporarily altered memories of adversarial forces through intense heat exposure, changing the tide. However, the wars ceased with the drafting of the Ember Treaty, mandating equitable Kabrite distribution and establishing the Hearth Council for moderated trade.
+          - generic [ref=e61]:
+            - heading "Recent History" [level=3] [ref=e62]
+            - paragraph [ref=e63]: Recent decades have seen diminishing Kabrite purity due to overexploitation, leading to the 'Dulling', a societal forgetfulness impacting cultural rituals. Technological advancements from Ferran Summit have produced methods for synthetic Kabrite, albeit at significant ethical debate. The rise of a radical sect, the Emberless, advocates for a return to pre-crystallization cultures, creating tension with traditionalists. The sect's clandestine raids on Memory Caches threaten societal stability.
+      - generic [ref=e64]:
+        - 'heading "Magic System: Thermal Resonance" [level=2] [ref=e65]'
+        - generic [ref=e66]:
+          - generic [ref=e67]:
+            - heading "Fundamentals" [level=3] [ref=e68]
+            - paragraph [ref=e69]: At the heart of Thermal Resonance lies the careful application of controlled heat to interact with Kabrite. Practitioners, known as Heat Singers, use specialized rods imbued with metallic filaments tuned to specific harmonic frequencies. To activate a memory shard, a practitioner holds the rod close to a Kabrite sample for exactly 236 seconds, inducing a resonant state that reveals or alters existing memories. The process is risky, as misalignment by merely 5 degrees can disastrously fragment or forge false memories, inflicting insanity or violent discord upon the subjects. Students learn through a stringent seven-year apprenticeship, mastering thermal control and harmonic alignment to avoid catastrophic errors.
+          - generic [ref=e70]:
+            - heading "Social Impact" [level=3] [ref=e71]
+            - paragraph [ref=e72]: Thermal Resonance is heavily regulated by the Hearth Council, which mandates all practitioners to be registered. Heat Singers are recognized by their Rod of Tone, a ceremonial badge symbolizing their oath to ethical resonance. Unlicensed usage is severely penalized—offenders are publicly denounced, branded with a thermal insignia of dishonor, and exiled to the Memory Fogs. Meanwhile, a thriving black market exists for forged Memory Shards used in clandestine manipulations of political and social standings.
+          - generic [ref=e73]:
+            - heading "Cost & Limitations" [level=3] [ref=e74]
+            - paragraph [ref=e75]: Any resonant act alters the user's thermal aura, visible as growing red hairlines upon the skin. Excessive use causes the user to emit heat that repels physical touch, alienating them from society. Because thermal aura is monitored by Resonance Seekers, practitioners often juggle the necessity for their services with the deepening solitude it brings.
+          - generic [ref=e76]:
+            - heading "Variants & Traditions" [level=3] [ref=e77]
+            - paragraph [ref=e78]: Regional practices of Thermal Resonance include the Vellian Murmur, a clandestine method to shroud memories under fog, recognized by its subtlety and lesser known outside the Vell Thickets. Another variant, the Ferranean Call, emphasizes auditory resonance to encode and recall long sequences of verbal information directly into Memory Shards, facilitating detailed historical archiving. The Ferranean Call is celebrated for its precision and complexity, practiced solely by the most skilled Resonance Singers.
+      - generic [ref=e79]:
+        - heading "Cultures" [level=2] [ref=e80]
+        - generic [ref=e81]:
+          - generic [ref=e82]:
+            - generic [ref=e83]:
+              - generic [ref=e84]:
+                - heading "Ferran Archivists" [level=3] [ref=e85]
+                - paragraph [ref=e86]: "Population: 60,000 predominantly within Ferran Summit"
+              - button "Explore In Depth" [ref=e87]
+            - paragraph [ref=e88]: "The Ferran Archivists have transformed their city into a bastion of knowledge preservation. Their architecture reflects this devotion: each building swirls upwards in a design symbolic of memory ascension, crafted from Baku Stones that allow for controlled resonant storage. Daily life revolves around the interaction with and maintenance of Memory Shards, which they meticulously document and archive. Mornings begin with the Reflection Hour, where individuals meditate before the Memory Caches, absorbing the wisdom of previous generations. Meals are void of unnecessary chatter, with a focus on soundless gestures, respecting the sanctity of memory and the ambient resonance. Clothing is woven with reflective fibers, allowing wearers to subtly acknowledge surrounding thermal auras."
+            - generic [ref=e89]:
+              - generic [ref=e90]:
+                - heading "Social Structure" [level=4] [ref=e91]
+                - paragraph [ref=e92]: Hierarchical by expertise in Thermal Resonance, Ferran Archivists honor those who master the Ferranean Call. Society is stratified into Circles of Influence, where the Inner Circle comprises the Elders who interpret Memory Shards for the Hearth Council. Family units consist of guild-oriented shared domiciles, with coming-of-age ceremonies that involve successfully encoding one's first shard according to the Ferranean tradition. Social mobility is fluid but dictated by one's resonance aptitude and shard contributions.
+              - generic [ref=e93]:
+                - heading "Economy" [level=4] [ref=e94]
+                - paragraph [ref=e95]: Their economy thrives on trade of Memory Shards and Resonance Tools, exporting their expertise in shard reading and historical consultancy services. The currency, termed Shardmarks, is literally formed from slivers of crystalline shards no longer suitable for memory storage but valued for their trade certainty. The Ferran trade routes extend to Taenor Sands for Kabrite supplies, utilizing climatically optimized caravans that conserve shard integrity during transport.
+              - generic [ref=e96]:
+                - heading "Values" [level=4] [ref=e97]
+                - paragraph [ref=e98]: Silence, introspection, and fidelity to historical veracity form the keystone of Ferran culture. Laws govern the ethical storage and retrieval of memory, with breaches considered societal sins. Disputes are resolved through Shard Mediation, employing the immediate evidence of historical record. The culture places high respect on the past, encouraging every individual to contribute to the continuity of consciousness.
+              - generic [ref=e99]:
+                - heading "Relationship to Magic" [level=4] [ref=e100]
+                - paragraph [ref=e101]: Thermal Resonance is a revered tradition, integrated into education systems, with mastery highly sought after. Shardcraft is seen as an art form, and Ferran Call Practitioners are celebrities within their own rights. Reverence for resonance is reflected in the annual Harmony Festival, where the most promising students showcase their talent in encoding challenging historical sequences.
+            - generic [ref=e102]:
+              - heading "Notable Figures" [level=4] [ref=e103]
+              - paragraph [ref=e104]: High Keeper Alvian Threshold is revered for his lifetime contributions to shard understanding and ethical code drafting. His visions solidified the Ferranean Call as a cornerstone of archival practice. The infamous rogue, Lyria Veil, once a brilliant practitioner, now a ghostly presence within the Memory Fogs after attempting unauthorized shard modifications.
+          - generic [ref=e105]:
+            - generic [ref=e106]:
+              - generic [ref=e107]:
+                - heading "Taenor Sandrunners" [level=3] [ref=e108]
+                - paragraph [ref=e109]: "Population: 45,000 spread across the dunal expanse of Taenor Sands"
+              - button "Explore In Depth" [ref=e110]
+            - paragraph [ref=e111]: Sandrunners are adapted to the harsh environment of the Taenor Sands, their bodies conditioned to withstand extreme heat. Their skin exhibits a unique capability to reflect sunlight with a granular sheen due to a specialized dusting technique using powdered Kabrite. The Sandrunner settlements are mobile, with structures swiftly erected in tiers to face the sun's path, maximizing thermal defense during midday while enhancing shard creation in the early hours. Everyday life involves the harvesting and preliminary refinement of Kabrite, with labor shared communally during the high sun periods. Meals comprise roasted grains and succulent cacti harvested at night, rich in moisture to combat dehydration.
+            - generic [ref=e112]:
+              - generic [ref=e113]:
+                - heading "Social Structure" [level=4] [ref=e114]
+                - paragraph [ref=e115]: Communal and clan-based, the Sandrunners operate on a meritocratic ethos rooted in endurance and resourcefulness. Leadership roles, titled Trailblazers, are earned through demonstrable prowess in weathering the desert’s tests, with prime responsibilities in optimizing Kabrite yields. Elders are venerated for their wisdom in thermal practices and shard strategies, guiding younger members in the arts of heat application and rudimentary Resonance initiation.
+              - generic [ref=e116]:
+                - heading "Economy" [level=4] [ref=e117]
+                - paragraph [ref=e118]: The Sandrunner economy pivots around Kabrite mining, with districts known as Havens serving as trade and rest points for itinerant traders. Kabrite Slips, their trade currency, represent future deliveries, incentivizing swift, efficient extraction. Relations with Ferran are symbiotic, driven by the supply of uncrystallized Kabrite and shared techniques in memory curation.
+              - generic [ref=e119]:
+                - heading "Values" [level=4] [ref=e120]
+                - paragraph [ref=e121]: To the Sandrunners, resilience and adaptability are prized, honoring those who thrive under the oppressive embrace of the Taenor sun. Their communal chants, Resonance Refrains, celebrate both individual and collective survival triumphs, echoing across the sands as a testament to communal life. In disputes, ritualized Sand Trials, challenging physiological stability and memory endurance, prevent lasting feuds.
+              - generic [ref=e122]:
+                - heading "Relationship to Magic" [level=4] [ref=e123]
+                - paragraph [ref=e124]: Resonance is approached pragmatically, with emphasis on its economic role. While not as culturally central as in Ferran, they respect Resonance as a necessary discipline in maintaining Kabrite commerce and ensuring the survival of invaluable history stored in shards. The rare Sand Singers—those who attain resonance through natural instinct—are deeply respected.
+            - generic [ref=e125]:
+              - heading "Notable Figures" [level=4] [ref=e126]
+              - paragraph [ref=e127]: Trailblazer Gavyn Sol is renowned for transforming seasonal Kabrite yields, making him pivotal during the Ember Wars. His granddaughter, Elara Sol, continues his legacy, having innovated cooling technologies that doubled endurance and extraction efficiency, earning her the moniker 'The Heart of Taenor'.
+          - generic [ref=e128]:
+            - generic [ref=e129]:
+              - generic [ref=e130]:
+                - heading "Vell Dreamers" [level=3] [ref=e131]
+                - paragraph [ref=e132]: "Population: 25,000 nestled within Vell Thickets"
+              - button "Explore In Depth" [ref=e133]
+            - paragraph [ref=e134]: Inhabitants of the mist-shrouded Vell Thickets, the Dreamers are known for their introspective culture and ethereal connection to the Memory Fogs. Sheltered in arboreal villages, they lead lives at the intersection of reality and reverie, with tradition deeply tied to the forest’s spectral echoes. The daily rhythm is one of serenity; at dawn, children gather the nightly harvest of Dream Dew, a silvery liquid prized for its calming properties. Their attire incorporates web-like fibers from the Sinkor Spiders, adding an almost ethereal presence to their silhouette, which complements their soft-spoken, melodic language resembling the sound of a gentle breeze.
+            - generic [ref=e135]:
+              - generic [ref=e136]:
+                - heading "Social Structure" [level=4] [ref=e137]
+                - paragraph [ref=e138]: Dreamers live in spread-out matrilinear clans, governed by Circles of Mist—groups comprised of the eldest and most contemplative, who navigate through the communal dreams shared by the society. These Circles practice Imbued Guidance, the extraction of life lessons from both personal and collective subconscious. Their flexible hierarchy allows mobility based on the wisdom shared in communal dream gatherings, referred to as Mist Communes.
+              - generic [ref=e139]:
+                - heading "Economy" [level=4] [ref=e140]
+                - paragraph [ref=e141]: Economic life revolves around the trade of Dream Dew and ephemera derived from Memory Fogs. The currency is conceptualized as Dream Tokens, representing promises exchanged through memory offerings. Vell maintains a cautious exchange with Taenor, mindful of resource over-extraction impacting the delicate balance of the Fogs.
+              - generic [ref=e142]:
+                - heading "Values" [level=4] [ref=e143]
+                - paragraph [ref=e144]: Dreamers value introspection, harmony, and the wisdom of dreams. Their art of Memory Whispering allows them to heal and soothe distraught minds, using the ephemeral nature of the Fogs to provide insight. Social bonds are anchored in the shared experience of the Fogs, with conflict rare and often mediated through mutual understanding during gatherings.
+              - generic [ref=e145]:
+                - heading "Relationship to Magic" [level=4] [ref=e146]
+                - paragraph [ref=e147]: While Thermal Resonance is approached with caution, Dreamers have developed the unique Vellian Murmur variation, allowing memories to be gently concealed within the Fogs. Their use is less about control and more towards the preservation and safeguarding of deeper truths.
+            - generic [ref=e148]:
+              - heading "Notable Figures" [level=4] [ref=e149]
+              - paragraph [ref=e150]: Eldress Nyra Li, a key figure in the Vellian Murmur’s development, pretends her gentle yet firm mediation between the Dreamers and external factions. The visionary Flinn Mistweaver, who pioneered the Dream Dew refinement techniques, remains a celebrated hero, memorialized within the heart of the Mist Communes.
+      - generic [ref=e151]:
+        - heading "Conflicts & Tensions" [level=2] [ref=e152]
+        - generic [ref=e153]:
+          - generic [ref=e154]:
+            - heading "Primary Conflict" [level=3] [ref=e155]
+            - paragraph [ref=e156]: The central conflict arises from the competing interests over the diminishing Kabrite within the Taenor Sands. The Sandrunners depend on it for their economy, while the Ferran Archivists see it as essential for maintaining their cultural memory archives. The Vell Dreamers, meanwhile, fear that the over-extension of Kabrite extraction will destabilize the balance of Memory Fogs, rendering their Dream Dews ineffectual. A mediator cannot easily broker peace as Kabrite not only underpins the economy but supports societal structures, leading to conflicting needs. If Sandrunners sacrifice extraction, their livelihood diminishes; conversely, Ferran is forced to forego their archival tradition, and the Dreamers face cultural erosion. Temporary alliances form but with mounting tension as Taenor shipments falter, leading to outbreaks of violence and the threat of war.
+          - generic [ref=e157]:
+            - heading "Secondary Conflicts" [level=3] [ref=e158]
+            - generic [ref=e159]:
+              - generic [ref=e160]:
+                - heading "Fog Veil Dispute" [level=4] [ref=e161]
+                - paragraph [ref=e162]: A territorial contention between the Vell Dreamers and Sandrunners over the mist-covered boundary of the Vell Thickets. The Dreamers claim ancient rights as guardians, while Sandrunners look to the covered deposits beneath the mists. This situation threatens to erupt as Dreamers escalate their pleas to the Hearth Council, fearing encroachment that could destroy both their sanctuary and their treasured Dream Dews.
+              - generic [ref=e163]:
+                - heading "Resonance Divergence" [level=4] [ref=e164]
+                - paragraph [ref=e165]: A philosophical rift within the Ferran ranks over the introduction of synthetic Kabrite. Some Archivists advocate for traditional methods, fearing identity loss, while others see the synthetics as a necessary evolution. This divergence risks fracturing the societal structure as the radical Emberless faction seizes upon these tensions to promote their agenda.
+          - generic [ref=e166]:
+            - heading "Rising Tensions" [level=3] [ref=e167]
+            - paragraph [ref=e168]: Recent developments such as sudden Kabrite deposit collapses and inexplicable Memory Shard fades incite paranoia among communities. Discontent grows as merchant caravans go missing, presumed sabotaged by sect extremists. Failed negotiations and unresolved disappearances escalate already volatile emotions.
+      - generic [ref=e169]:
+        - heading "Economy & Trade" [level=2] [ref=e170]
+        - generic [ref=e171]:
+          - generic [ref=e172]:
+            - heading "Overview" [level=3] [ref=e173]
+            - paragraph [ref=e174]: Trade within Kabrithean Tides revolves around the Kabrite economy and Memory Shards. The Sandrunners act as the primary source of unprocessed Kabrite, while the Ferran Archivists manage its refinement and distribution, heavily interlinked with their services in historical archiving. Due to the central importance of these items, currency is frequently Memory Shard-based, with authenticity guaranteed through Resonance Seekers. Wealth distribution leans towards communities skilled in resonance manipulation, particularly the Archivists and their esteemed resonance tools which facilitate beneficial trade agreements.
+          - generic [ref=e175]:
+            - heading "Scarcity & Resources" [level=3] [ref=e176]
+            - paragraph [ref=e177]: As Kabrite reserves wane, Memory Shards surge in value, leading to heightened disputes over mining rights. The rarity incentivizes clandestine mining and unauthorized resonance acts, further destabilizing lawful trade. The Dreamers' Dream Dew likewise assumes increasing significance, entwining its scarcity with the memory-preservation conflicts.
+      - generic [ref=e178]:
+        - heading "Daily Life" [level=2] [ref=e179]
+        - generic [ref=e180]:
+          - generic [ref=e181]:
+            - heading "The Common Person" [level=3] [ref=e182]
+            - paragraph [ref=e183]: For Sandrunners, mornings begin with communal chants and activity planning as the sun rises over the dunes. Harvesting Kabrite is challenging yet fulfilling, with rest interjected by minimalistic meals designed to conserve energy and water. Children play within cooling tents where early resonance skills are taught through game. Ferran Archivists maintain meticulous routines involving archival commitments and resonance studies. Their interaction with memory is venerated, often forming days around Reflection Hours. The Dreamers engage with nature and the ethereal memory mists, where leisurely pursuits blend with spiritual gatherings exploring shared subconscious insights.
+          - generic [ref=e184]:
+            - heading "Technology & Tools" [level=3] [ref=e185]
+            - paragraph [ref=e186]: Technological advancement centers around resonance enhancement and efficient Kabrite detection. Sandrunner sleds with heat-dispersing chassis facilitate faster trade, while Ferran's acoustic database systems structure historical information retrieval. Innovations using Baku Stones optimize resonance infrastructure, amplify memory encoding processes, and improve thermal endurance equipment.
+      - generic [ref=e187]:
+        - heading "Unique Feature" [level=2] [ref=e188]
+        - paragraph [ref=e189]: Upon a player entering a high-heat zone or handling heated Kabrite, they trigger a Memory Shard phenomenon, crystallizing recent events. This mechanic creates tangible in-game evidence of past actions, influencing narrative development and player interaction. Players might find themselves inadvertently altering team dynamics due to this memory solidification, necessitating strategic deliberations. Mistakes are visibly locked into the crystalline structure, symbolizing permanence amidst the transient reality of life within Kabrithean Tides.
+      - generic [ref=e190]:
+        - heading "Hidden Secrets" [level=2] [ref=e191]
+        - paragraph [ref=e192]: The government suppresses knowledge of experimental Memory Shard synthesis to avoid societal unrest regarding resource limitations. In Vell Thickets, an ancient tree reputedly holds the first Shard of All, containing secrets about universe genesis now forgotten. Hidden agents of the Emberless infiltrate high-profile gatherings, working to disestablish structures they view as chains of reliance on thermal memory mechanisms.
+      - generic [ref=e193]:
+        - heading "What Makes This World Unique" [level=2] [ref=e194]
+        - paragraph [ref=e195]: Kabrithean Tides is distinctively defined by the interaction between heat and memory, a fusion unexplored in Middle-earth or Mistborn. This world presents a novel societal base that intertwines cultural dependencies on memory crystallization, alongside varying strategic approaches to resonance. The dynamic interplay between physical heat influences and social memory mechanisms crafts a multifaceted culture and conflict framework unattainable within existing fantasy paradigms, offering expansive storytelling possibilities where every choice etches a lasting echo through the stones of time.
+      - generic [ref=e196]:
+        - heading "Explore Further" [level=3] [ref=e197]
+        - generic [ref=e198]:
+          - button "Generate Character" [ref=e199]
+          - button "Generate Location" [ref=e200]
+          - button "Generate Legend" [ref=e201]
+          - button "Generate Historical Event" [ref=e202]
+```

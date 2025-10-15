@@ -1,0 +1,944 @@
+/**
+ * World Generation Prompt - Fantasy Theme
+ * Generates unique fantasy worlds with original cultures, magic systems, and conflicts
+ */
+
+export const worldGenerationPrompt = {
+  name: 'World Generation - Fantasy',
+  version: '1.0',
+  description: 'Generates a unique fantasy world with original cultures, magic systems, and conflicts',
+
+  // Recommended model parameters
+  parameters: {
+    model: 'gpt-4o', // Using GPT-4o for extremely detailed, complex worlds (16K output limit)
+    temperature: 0.95, // Maximum creativity for truly unique worlds
+    maxTokens: 12000, // Increased to 12K for comprehensive world (3 cultures, 3 chars, 3 locs, 1 legend)
+  },
+
+  // System prompt to set the AI's role and constraints
+  systemPrompt: `You are a creative world-building AI for a fantasy adventure game. Your role is to generate completely unique, imaginative fantasy worlds that avoid common tropes and clichés.
+
+Each world you create must be:
+- ORIGINAL: Avoid copying existing fantasy settings (no Middle-earth, Westeros, etc.)
+- UNIQUE: Create new cultures, magic systems, and conflicts
+- EVOCATIVE: Use vivid, sensory language that sparks imagination
+- COHERENT: Ensure all elements fit together logically
+- CONCISE: Focus on the most interesting and relevant details
+
+Output your response ONLY as valid JSON with no additional text or markdown.`,
+
+  // Main prompt template - professional-grade with randomized domain constraints
+  getUserPrompt: () => {
+    // Generate random conceptual constraints to force different types of uniqueness each time
+    const conceptDomains = [
+      ['biology', 'architecture'],
+      ['music', 'geology'],
+      ['sound', 'identity'],
+      ['language', 'chemistry'],
+      ['food', 'time'],
+      ['weather', 'consciousness'],
+      ['color', 'mortality'],
+      ['touch', 'causality'],
+      ['pain', 'communication'],
+      ['growth', 'space'],
+      ['decay', 'perception'],
+      ['breath', 'law'],
+      ['heat', 'memory'],
+      ['texture', 'truth'],
+      ['rhythm', 'kinship'],
+    ];
+
+    // Pick random constraints
+    const domains = conceptDomains[Math.floor(Math.random() * conceptDomains.length)];
+    const domain1 = domains[0].toUpperCase();
+    const domain2 = domains[1].toUpperCase();
+
+    return `PROMPT: ${domain1} & ${domain2} — Radical Worldgen (Professional-Grade)
+
+Role & Output Format
+You are a world-generator. Produce one unforgettable fantasy world that players remember years later. The world must mechanically fuse ${domain1} with ${domain2} (not flavor), feature deep worldbuilding, and include a robust magic system that changes moment-to-moment play.
+Output: A <reasoning> block explaining how you satisfied core requirements, followed by JSON only (single object, no markdown fences, no preamble, no commentary, no extra keys).
+
+═══════════════════════════════════════════════════════
+EXAMPLE OF EXCELLENT WORLD GENERATION (DETAILED, MULTI-PAGE)
+═══════════════════════════════════════════════════════
+
+Domain Fusion: BREATH mechanizes LAW
+
+THIS EXAMPLE SHOWS THE PROPER LEVEL OF DETAIL AND LENGTH FOR EACH SECTION.
+NOTE: This example has ~2600 words total. Your generation should match this scope.
+
+{
+  "worldName": "Windlaw Dominion",
+
+  "tagline": "Where every exhalation is a legally binding oath, and broken promises become visible scars in the air.",
+
+  "theme": "In Windlaw Dominion, breath mechanizes law—every spoken oath binds itself into the air you exhale, creating visible Contract Threads that shimmer between speaker and witness for exactly 28 days. These threads measure 0.3-0.8 millimeters thick and glow in colors corresponding to oath severity: white for minor promises, crimson for life-binding contracts, obsidian for death oaths. The Breath Courts in Vental City use Oath Readers—trained officials who can trace thread trajectories back to their origin point within a 50-meter radius—to settle all legal disputes. When you break an oath, the thread snaps audibly (loud enough to hear from 12 meters away) and leaves a permanent threadburn scar on both your lungs and your skin, reducing your lung capacity by 2-5% per break. After accumulating 20 breaks (40-100% lung damage), most people suffocate within the year.",
+
+  "geography": {
+    "overview": "Windlaw Dominion occupies a wind-scoured plateau called the Ventus Flats, sitting 800 meters above sea level and swept by constant easterly winds averaging 35-50 kph. These winds carry everyone's Contract Threads eastward, creating a visible streaming tapestry in the sky that flows toward the Thread Graveyards—massive tangles of expired oath-threads that accumulate in the Eastern Wastes like ethereal tumbleweeds. The plateau's western edge features the Breath Cliffs, 600-meter vertical drops where convicted oathbreakers are thrown so their final exhalation disperses into the void. Three major climate zones exist: the Central Flats (dry, windy grasslands), the Northern Mire (wetland where wind patterns slow and threads accumulate dangerously thick), and the Eastern Wastes (where thread density creates a suffocating atmosphere that kills within 4 hours of exposure). The Windbreak Forests in scattered valleys offer the only shelter from constant winds, but threads tangle in the branches, making every tree a visible history of nearby promises.",
+    "majorLocations": [
+      {
+        "name": "Vental City",
+        "type": "capital city",
+        "description": "Built in concentric circles around the central Breath Courts, Vental City houses 40,000 people in wind-resistant stone buildings with minimal windows. The architecture features Wind Channels—deliberate gaps between structures that direct thread flow eastward, preventing dangerous accumulation. The Grand Thread Plaza at the city's heart displays 2,000 years of royal oaths preserved under glass domes, creating a museum of governance. Oath Readers train in the Academy of Threads, spending 12 years learning to trace thread origins, interpret thread colors, and testify in legal proceedings. The city's Threadburn Hospital treats oathbreakers with lung-reducing surgery, removing damaged tissue to extend life by 5-8 years.",
+        "significance": "The heart of legal authority and thread-based governance for all of Windlaw Dominion."
+      },
+      {
+        "name": "Silenthollow",
+        "type": "town",
+        "description": "Population 800, located in a deep Windbreak Forest valley where thread accumulation creates a visible canopy overhead. Citizens speak only when absolutely necessary, using hand-signs for daily communication to avoid creating unnecessary threads. The town's economy revolves around Thread Harvesting—carefully collecting expired threads from trees and selling them to artists who weave them into tapestries. However, harvesting is dangerous work; prolonged exposure to high thread density causes Breath Fever, a respiratory illness that kills 12% of harvesters annually. Silenthollow's Whispering Market operates on barter only, as spoken price negotiations would create binding contracts.",
+        "significance": "Primary source of thread materials for art and historical preservation, demonstrating alternative relationship with breath law."
+      },
+      {
+        "name": "The Breath Cliffs",
+        "type": "execution site",
+        "description": "A 600-meter vertical limestone cliff face on the plateau's western edge, where convicted oathbreakers face execution by defenestration. The cliffs feature natural wind tunnels that amplify the sound of victims' final screams to a 5-kilometer radius, serving as public reminder of legal consequences. At the cliff base, the Thread Garden grows—a bizarre ecosystem where expelled oath-threads from falling victims tangle into the rocks, and peculiar thread-eating lichens have evolved. These lichens, called Oathbreak Moss, glow faintly at night and are harvested by the Cliff Clans for medicinal purposes. The cliffs are marked by 2,000 iron posts, each representing a century of executions.",
+        "significance": "The ultimate deterrent against oathbreaking and the source of rare thread-eating organisms."
+      }
+    ]
+  },
+
+  "history": {
+    "ancientEra": "Before the Breath Laws, Windlaw Dominion existed as seven warring clan territories constantly engaged in border skirmishes and broken treaties. Historical records from 1,800 years ago describe a world drowning in lies, where promises meant nothing and trust was impossible. The Awakening occurred when a meteorite impact in what is now the Eastern Wastes released atmospheric breath-reactive particles that made spoken oaths physically manifest for the first time. The initial chaos killed 40% of the population as thousands of broken promises simultaneously appeared as thread burns on people's lungs. The Survivors' Council, led by Matriarch Vess Kael, established the First Breath Code: speak only truth, bind promises carefully, and exile those who break oaths repeatedly. They built the first Breath Courts to interpret thread patterns and created the Oath Reader profession.",
+    "formativeConflict": "The Thread Wars (600 years ago) erupted when the Northern Mire clans discovered that speaking underwater prevented thread formation—waterlogged breath doesn't create visible contracts. They used this loophole to make false promises, manipulate trade agreements, and eventually declare war on the Central Flats territories. The war lasted 12 years and killed 60,000 people before Archon Torvald Breath-True invented Thread Tracing—a technique allowing Oath Readers to detect recent underwater oaths by measuring moisture content in residual lung threads. He exposed the Northern Mire's deception at the Council of Winds, leading to mass executions at the Breath Cliffs (400 people thrown in a single week, called the Fall of Lies). The war ended with the Submersion Ban, making underwater oath-speaking punishable by immediate execution. The Mire clans were forced to drain their lakes and live on dry land, fundamentally changing their culture.",
+    "recentHistory": "The last 50 years have seen rising tensions between Traditionalists (who want strict oath laws maintained) and the Freedbreath Movement (advocating for thread-removal technology and reduced legal binding of casual speech). Ten years ago, an inventor named Callista Windless created the Breath Filter—a mask that captures threads before they form, effectively allowing lie-speaking. The Breath Courts declared filters illegal and burned Callista at the Breath Cliffs, but underground filter trade has exploded. Last year, the Thread Plague struck Vental City when someone weaponized concentrated expired threads from the Eastern Wastes, spreading them through city wells. The plague killed 400 people via sudden suffocation and destabilized trust in government thread management."
+  }
+}
+
+IMPORTANT: Here is ONE COMPLETE CULTURE showing the required 600-800 word detail level:
+
+  "cultures": [
+    {
+      "name": "Vental Oathkeepers",
+      "population": "~35,000 concentrated in Vental City and surrounding plateau settlements",
+      "description": "Oathkeepers live by the principle that speech is sacred and every word carries weight. Their daily routines begin at dawn with the Silence Hour—60 minutes of complete quiet to minimize accidental oath-making before minds are fully awake. They wear Threadcatchers, elaborate bronze jewelry that catches and displays their personal Contract Threads like medals of honor, turning their promises into visible fashion statements. Oathkeeper children attend Thread Schools from age 5-15, learning precise legal language, breath control to minimize thread thickness, and the 47 Traditional Oath Forms used in commerce, marriage, and governance. Their architecture reflects thread-consciousness: buildings feature Thread Galleries where families display their most honored promises under glass, and every home has a Speaking Room—a sealed chamber where private conversations won't create publicly visible threads. They eat Breath-light cuisine—foods designed to minimize talking during meals, served in exact portions so nobody needs to request more and create obligation threads. Their clothing uses Threadweave patterns—embroidered designs showing the most important oaths of their lineage.",
+      "socialStructure": "Hierarchy is determined by Thread Reputation: citizens with fewer threadburn scars and more intact long-term threads (5+ year promises kept) gain social standing and voting rights in Breath Courts. The society divides into four castes: Unbroken (zero threadburns, ~5% of population, eligible for Oath Reader training), Scarred (1-5 threadburns, ~60%, full citizenship), Marked (6-15 threadburns, ~30%, restricted from legal testimony), and Voiceless (16+ threadburns, ~5%, forbidden from making new oaths and essentially exiled from society). Family structures emphasize genetic thread-keeping ability—marriages are arranged to pair families with strong lung capacity and low breaking rates. The coming-of-age ritual at 16 involves making your First Civic Oath in front of the Breath Courts, a binding 10-year promise to serve society (military service, thread harvesting, or public works).",
+      "economy": "The Oathkeeper economy runs on Spoken Contracts—every business transaction creates visible threads, making fraud nearly impossible. They export Thread Art (tapestries woven from expired threads), Oathbreak Moss (medicinal lichen from the Breath Cliffs), and Thread Reading Services (trained Oath Readers hired by foreign governments to verify treaties). They import food (plateau agriculture is poor), metal (no local ore deposits), and most manufactured goods. Their currency is the Breath Mark—small bronze coins stamped with oath phrases, but most high-value transactions use direct promise-exchange: 'I oath to deliver 40 bushels of grain within 28 days' creates a thread serving as immediate payment. The Thread Merchants' Guild controls trade, requiring all members to maintain Unbroken status. The Whispering Market in Silenthollow operates as an alternative economy using hand-signals and barter to avoid thread creation.",
+      "values": "Oathkeepers prize Truth Above All—their central moral teaching is 'Better silence than lies, better death than broken oaths.' They practice Considered Speech: pausing 3 seconds before answering questions to avoid hasty promises. They view threadburns as moral failures, and families of Marked individuals often face social ostracism. However, they also practice Oath Mercy—a legal tradition allowing first-time breakers to undergo lung reduction surgery and public penance rather than execution. Disputes are resolved through Breath Duels: both parties state their case, and Oath Readers examine thread patterns to determine truth. They honor the Voiceless as cautionary figures, believing their suffering prevents others from careless speech.",
+      "relationshipToMagic": "Oathkeepers see thread manipulation as the highest calling. They fund the Academy of Threads where students spend 12 years learning to read thread trajectories, measure thread thickness with precision tools, and trace threads back to speakers. Advanced practitioners can perform Thread Surgery—carefully cutting and preserving broken threads for evidence in court cases. They believe the Awakening (when breath-reactive particles first appeared) was a divine gift forcing humanity toward truth. They strictly forbid Breath Filters (thread-preventing masks) and execute anyone caught using them.",
+      "notableFigures": "High Arbiter Kenric Clearvoice leads the Breath Courts, known for maintaining Unbroken status for 40 years and personally reading 10,000+ oath disputes. Thread-Martyr Callista Windless, executed 10 years ago for inventing Breath Filters, is viewed as either hero or villain depending on factional alignment. General Torvald Breath-True (deceased 594 years ago) invented Thread Tracing and ended the Thread Wars, now honored with a 12-meter bronze statue in Thread Plaza."
+    }
+  ]
+
+Your generation must include THREE cultures like this one—each 600-800 words with ALL subsections (description, socialStructure, economy, values, relationshipToMagic, notableFigures) properly detailed.
+
+Your complete generation must also include:
+- magicSystem (with fundamentals, socialImpact, cost, variants subsections) - 400-500 words total
+- conflicts (with primary, secondary, risingTensions) - 400-500 words total
+- economy (with overview, scarcity) - 300-400 words total
+- dailyLife (with commonPerson, technology) - 350-450 words total
+- uniqueFeature - 150-200 words
+- secrets - 150-200 words
+- uniquenessStatement - 150-200 words
+
+This example demonstrates:
+✓ Specific measurements and numbers throughout (28 days, 0.3-0.8mm, 35-50 kph, 50-meter radius, 2-5% lung damage, 600 meters, 40,000 people, etc.)
+✓ Named locations, institutions, and phenomena (Vental City, Breath Courts, Oath Readers, Thread Graveyards, Breath Fever, Oathbreak Moss, Thread Wars, Submersion Ban, Freedbreath Movement, etc.)
+✓ Concrete daily practices and physical details
+✓ Historical depth with specific dates and events
+✓ Actual word counts matching targets (theme ~180 words, geography.overview ~220 words, each location ~110-130 words, history sections totaling ~450 words)
+
+═══════════════════════════════════════════════════════
+
+The Core Law: ${domain1} as ${domain2} Mechanism
+Your world must have one physical law where ${domain1.toLowerCase()} mechanizes ${domain2.toLowerCase()}. This is NOT metaphor or flavor—it must be:
+
+• Testable: Include at least one numeric detail (measurement, duration, frequency, threshold)
+• Consequential: Shapes ecosystems, architecture, law, trade, tools, and daily survival
+• Invasive: Characters cannot opt out; it affects every interaction
+
+Example format: "Civic ${domain2.toLowerCase()} is notarized by ${domain1.toLowerCase()} [specific mechanism with numbers]. [Institution] uses [measurement tool]. Forging ${domain2.toLowerCase()} requires [specific difficult process]."
+
+═══════════════════════════════════════════════════════
+CREATIVE PRINCIPLES - Apply to Every Element
+═══════════════════════════════════════════════════════
+
+✅ PRINCIPLE 1: SPECIFICITY OVER ABSTRACTION
+Instead of: "ancient magical energy" or "mystical power"
+Use: "The copper smell of lightning trapped in amber bottles measured in watt-hours"
+
+Requirements:
+• Include concrete sensory details (temperature, texture, sound, smell, taste)
+• Describe physical mechanisms step-by-step with specific materials
+• Use exact numbers, measurements, timescales (28 days, 0.3mm, 35 kph, 600 meters)
+• Name specific tools, equipment, and processes
+• Reference observable cause-and-effect
+
+✅ PRINCIPLE 2: MUNDANE APPLICATIONS OF FANTASTIC ELEMENTS
+Instead of: "Magic shapes the destiny of nations"
+Use: "Magic is primarily used for filing paperwork faster and resolving contract disputes"
+
+Requirements:
+• What do ordinary people do with this daily?
+• What bureaucracy or regulations have emerged?
+• What mundane problems does it solve?
+• What industries exist to serve everyday needs?
+• How do children learn to use this?
+
+✅ PRINCIPLE 3: UNEXPECTED DOMAIN FUSION (${domain1.toUpperCase()} + ${domain2.toUpperCase()})
+Instead of: "Magic affects emotions" (vague metaphor)
+Use: "${domain1} mechanistically controls ${domain2} through [specific physical process]"
+
+Requirements:
+• How does ${domain1.toLowerCase()} mechanize/constrain/regulate ${domain2.toLowerCase()}?
+• What happens when you treat ${domain2.toLowerCase()} as a ${domain1.toLowerCase()} problem?
+• What specific equipment bridges these domains?
+• What measurable units quantify this relationship?
+• What professional roles exist because of this fusion?
+
+Example: BREATH + LAW = Government regulations requiring breath-tracking devices, Bureau of Respiratory Compliance, Form 27-B for breath allocation, lung capacity measured in breath-debt units
+
+✅ PRINCIPLE 4: GROUNDED CONSEQUENCES
+Instead of: "The war changed everything"
+Use: "Trade routes shifted north, bankrupting 400 southern merchants who now operate illegal smuggling networks"
+
+Requirements:
+• Show economic implications (who profits? who loses? what's the black market?)
+• Reveal political power dynamics (who makes decisions? who enforces?)
+• Demonstrate social class tensions (who has access? who's excluded?)
+• Detail technological adaptations (what tools emerged? what infrastructure?)
+• Name specific institutions, regulations, and enforcement mechanisms
+
+✅ PRINCIPLE 5: INVERSION OF EXPECTATIONS
+Instead of: "Heroes quest for legendary artifacts to save the world"
+Use: "Bureaucrats investigate Form 27-B filing discrepancies that could destabilize the breath-debt market"
+
+Requirements:
+• Make the 'epic' mundane (cosmic stakes → paperwork problems)
+• Make the 'mundane' significant (filing errors → economic collapse)
+• Power comes from unexpected sources (accounting skill, not combat prowess)
+• Conflicts center on practical concerns (resource allocation, not ideology)
+• Names are boring and descriptive (Department of X, not The Eternal Order)
+
+✅ PRINCIPLE 6: SYSTEMIC THINKING
+Instead of: "The protagonist has special magical powers"
+Use: "Everyone has this ability, creating these systemic effects: [list 3-4 social consequences]"
+
+Requirements:
+• How does society organize around this universal trait?
+• What regulations or laws govern its use?
+• What black markets or underground economies emerge?
+• Who benefits most? Who suffers? What class divisions result?
+• What professional guilds, unions, or associations exist?
+• What generational conflicts arise from changing attitudes?
+
+═══════════════════════════════════════════════════════
+SCAMPER CREATIVITY FRAMEWORK - Systematic Originality
+═══════════════════════════════════════════════════════
+
+Before generating each major element, apply SCAMPER systematically:
+
+S - SUBSTITUTE: Replace fantasy defaults with unexpected alternatives
+  → Instead of "dragon" what else is powerful and feared? (bureaucratic audit, public shaming, license revocation)
+  → Instead of "magic sword" what else channels power? (filing system, plumbing network, respiratory apparatus)
+  → Instead of "ancient prophecy" what drives the plot? (accounting error, infrastructure failure, regulation loophole)
+
+C - COMBINE: Merge unrelated domains
+  → ${domain1.toUpperCase()} + ${domain2.toUpperCase()} = ?
+  → What if you crossed: accounting + necromancy? (financial audits for the dead)
+  → What if you crossed: plumbing + prophecy? (pipes that predict floods based on flow rates)
+  → What if you crossed: bureaucracy + magic? (spells require government permits)
+
+A - ADAPT: Borrow from different contexts
+  → How would a tax collector approach magic? (regulation, measurement, licensing)
+  → How would a janitor solve this "epic" problem? (practical maintenance, cleaning protocols)
+  → How would an accountant wage war? (economic pressure, supply chain disruption, audit weaponization)
+  → How would a plumber design a mystical system? (flow rates, pressure valves, leak detection)
+
+M - MAGNIFY/MINIFY: Change scale unexpectedly
+  → Cosmic stakes → bureaucratic paperwork (world-ending if forms aren't filed correctly)
+  → Personal problem → societal crisis (one person's filing error collapses the economy)
+  → Epic magic → industrial process (mass-produced spells in factories)
+  → Individual hero → committee decision (adventures approved by review boards)
+
+P - PUT TO OTHER USE: Change assumed purposes
+  → Magic meant for war → used for cooking, cleaning, filing
+  → Epic artifacts → mundane tools (legendary sword is now a letter opener)
+  → Ancient power → modern convenience (world-shaping magic runs the subway system)
+  → Sacred rituals → administrative requirements (coming-of-age = filing tax forms)
+
+E - ELIMINATE: Remove assumed necessities
+  → No chosen ones (everyone has the power, or no one does)
+  → No ancient prophecies (the future is bureaucratic, not mystical)
+  → No epic battles (conflicts resolved through paperwork and regulations)
+  → No dark lords (antagonists are systemic problems, not villains)
+  → No world-ending threats (stakes are economic, political, social)
+
+R - REARRANGE: Reverse typical sequences
+  → Start with the "peaceful ending" state (already resolved, now dealing with aftermath)
+  → Begin with villain victory, work backward (the bureaucrats won, heroes are outlawed)
+  → Reverse cause-effect (the effect is normal, the cause is the mystery)
+  → Invert power structures (the weak are powerful, the mighty are marginalized)
+
+═══════════════════════════════════════════════════════
+SPECIFIC GUIDANCE FOR ${domain1.toUpperCase()} + ${domain2.toUpperCase()}
+═══════════════════════════════════════════════════════
+
+MAGIC SYSTEMS MUST:
+✓ Have specific physical laws (not "mystical energy" or "ancient power")
+✓ Cost something concrete and measurable (time in hours, money in currency units, health as % lung capacity, reputation as social credit score)
+✓ Have mundane everyday applications (not just combat/quests)
+✓ Create visible social stratification (who has access? who's excluded? what class system emerges?)
+✓ Follow directly from ${domain1.toLowerCase()}/${domain2.toLowerCase()} fusion with specific mechanisms
+
+CULTURES MUST:
+✓ Organize around practical concerns, not abstract ideologies (resource access, economic systems, survival needs)
+✓ Have specific economic bases (what do they produce? what do they trade? what's their currency?)
+✓ Show concrete class tensions and power dynamics (who rules? how? who resists? how?)
+✓ Adapt to world's core conceit in measurably different ways (include specific numbers, practices, technologies)
+✓ Use mundane/bureaucratic names (not epic/mythical): "East Wharf Collective", "Department of Mundane Affairs", "Local 447"
+
+CONFLICTS MUST:
+✓ Stem from resource competition or policy disputes (not good vs evil, light vs dark)
+✓ Show multiple valid perspectives (all sides have legitimate needs/concerns)
+✓ Have boring, descriptive names ("The Grain Tax Dispute", "The Breath Allocation Crisis")
+✓ Involve institutional power (governments, guilds, unions, departments)
+✓ Create impossible choices (both sides need mutually exclusive resources)
+
+DESCRIPTIONS MUST:
+✓ Use concrete sensory details (what does it sound like? smell like? feel like? taste like?)
+✓ Include specific materials and construction (brass pipes, limestone buildings, copper gauges)
+✓ Reference temperature, texture, weight, dimensions
+✓ Avoid vague adjectives: powerful, ancient, mystical, ethereal, luminous
+✓ Include background sounds, ambient smells, tactile sensations
+
+NAMES MUST:
+✓ Sound mundane, bureaucratic, or geographic (not mythical)
+✓ Examples: "Department of X", "Local 447", "East Wharf District", "Bureau of Y", "Committee for Z"
+✓ Avoid epic suffixes: -iel, -wen, -dor, -ia, -or, -mancy
+✓ Use job titles, locations, or descriptive phrases
+✓ Be immediately understandable (not mysterious or cryptic)
+
+═══════════════════════════════════════════════════════
+CRITICAL AVOIDANCES (Keep this list SHORT - 12 items only)
+═══════════════════════════════════════════════════════
+
+These patterns undermine originality. Avoid:
+1. "The [Adjective] [Noun]" faction names (The Eternal Council, The Shadow Brotherhood, The Luminary Guild, The Apex Council)
+   → Use instead: "Department of X", "Local 447", "Institution of Y", "[City] Collective", "Bureau of Z"
+2. Light vs dark / order vs chaos as primary conflict
+3. Chosen ones or prophecies driving the plot
+4. Magic powered by: crystals, emotions, memories, dreams, life force, mana, ether, essence, spirit
+   → Use instead: Concrete physical processes with specific materials and measurements
+5. Names ending in: -ia, -dor, -wen, -riel, -mancy
+6. Generic descriptors: ancient, eternal, mystical, ethereal, luminous, sacred
+7. Epic quests or world-saving heroes
+8. Abstract ideological conflicts (tradition vs progress, purity vs corruption)
+9. Time loops, dream worlds, or "belief makes real"
+10. Vague magic verbs: channel, harness, wield, attune, bond with
+11. Using "Guild" or "Council" with "The" prefix (The X Guild, The Y Council)
+    → Use instead: "[Name] Guild" (without "The"), "Council of [Place]", or bureaucratic alternatives
+12. Generic power sources: mana pools, ether streams, essence fonts, spiritual energy
+
+Required Elements
+
+1. Two Cultures in Resource Clash
+• Mutually incompatible survival needs under the Core Law (not philosophical differences)
+• Each must have: daily practices (food/communication/ritual), visible physical traits, one named settlement/craft, one concrete survival need
+• Test: Can a wise mediator broker a compromise? If yes, make it structurally harder.
+
+2. Magic System with Relational Cost
+Your magic MUST specify:
+✓ Physical action: What you touch/ingest/cut/speak/arrange
+✓ Observable outcome: What others see/hear happen
+✓ Social consequence: Visible, immediate, damaging to relationships (not internal feelings)
+✓ Enforcer: One named social role/institution that tracks/punishes use
+✓ Why it's used: Despite the social cost, what necessity drives people to it?
+
+Examples of GOOD costs:
+• "Kin registries auto-expel you when your [measurable thing] drifts >15 [units]"
+• "Every use adds an audible marker; three markers = exile"
+• "Ritual marks you as oath-breaker in official records"
+
+Examples of BAD costs (reject these):
+• "Drains your stamina" (video game HP)
+• "Ages you" (time/essence - forbidden)
+• "Corrupts your soul" (intangible - forbidden)
+• "Costs memories" (banned source)
+• "Requires rare crystals" (banned material)
+
+3. Unwinnable Conflict
+The conflict must be structurally unwinnable:
+✗ "They need the same resource" → compromise: share it
+✓ "Their survival methods destroy each other's prerequisites"
+
+Required: What each side must sacrifice; immediate stakes for ordinary families (not just leaders/heroes).
+
+Pre-Generation Checklist
+Before writing JSON, complete these steps in your <reasoning> block:
+
+A. DETAIL LEVEL VERIFICATION (Study the example above)
+□ Did I review the EXAMPLE and match its level of specificity?
+□ Does my theme include: numeric measurement + named location + named phenomenon?
+□ Does my magic description include: exact duration + named institution + named location + specific consequence?
+□ Does each culture description include: named settlement + named resource + specific daily practice + physical trait?
+□ Total detail count: At least 10 named places/things/institutions across the entire world?
+
+B. Core Law Verification
+□ Does ${domain1.toLowerCase()} mechanically define ${domain2.toLowerCase()} (not symbolically)?
+□ Did I include a specific numeric detail (number + unit)?
+□ Does this law force changes to architecture, law, or daily life?
+□ Is it as mechanically concrete as the example's "heartbeat frequency measured in hertz"?
+
+C. World Material Inventory
+Document these (weave into descriptions, don't list):
+• One ${domain1.toLowerCase()}-reactive natural material (where harvested, what it does)
+• One architectural feature with ${domain1.toLowerCase()} function
+• One crime and its measurable punishment
+• One food/drink and how ${domain1.toLowerCase()} affects it
+• One black market good tied to the Core Law
+
+D. Cultural Texture
+For each culture:
+□ Named settlement or craft guild (like "Bellhaven" or "Silent Forest")
+□ One daily practice: food prep, communication protocol, or ritual (like "frequency meditation every dawn")
+□ Visible physical trait or body modification (like "resonance jewelry" or "ritual scars")
+□ Concrete survival need (like "deadwood bark to mask frequencies")
+□ Unique greeting or communication style (like "place hand over heart and hum")
+
+E. Differentiation Test
+For each major element, ask:
+"Could this appear in D&D, Middle-earth, Mistborn, Avatar, or Earthsea?"
+If YES → Replace it. Name the franchise you're echoing and why it must change.
+
+F. Playability Check
+Read your uniqueFeature. Does it answer:
+"When a player says 'I do X,' what IMMEDIATE consequence does this rule create?"
+Not: "${domain1} shapes society" (lore)
+But: "${domain1} reveals ${domain2}, so [concrete player choice impact]" (gameplay)
+Example: "Standing within 3 meters triggers resonance bonding" creates immediate consequences
+
+JSON Schema (DETAILED MULTI-PAGE WORLD)
+
+{
+  "worldName": "string (1–3 words; evocative; check Forbidden List)",
+
+  "tagline": "string (one sentence capturing the essence of this world)",
+
+  "theme": "string (150-200 words: the ${domain1.toLowerCase()}-${domain2.toLowerCase()} law in detail + multiple numeric measurements + 3-5 named natural phenomena + 2-3 named locations + how this affects daily life + environmental effects)",
+
+  "geography": {
+    "overview": "string (200-250 words: climate zones, major landforms, how the Core Law shapes geography, named regions, natural resources, dangers)",
+    "majorLocations": [
+      {
+        "name": "string",
+        "type": "string (city, region, landmark, etc.)",
+        "description": "string (100-150 words with specific details)",
+        "significance": "string"
+      },
+      "// Include 3-4 major locations"
+    ]
+  },
+
+  "history": {
+    "ancientEra": "string (150-200 words: origins, how Core Law was discovered, founding myths, ancient civilizations)",
+    "formativeConflict": "string (150-200 words: a pivotal historical event that shaped current tensions, named figures, consequences)",
+    "recentHistory": "string (100-150 words: last 50-100 years, current state of affairs, rising tensions)"
+  },
+
+  "magicSystem": {
+    "name": "string (2–4 words; evocative; avoid banned verbs)",
+    "fundamentals": "string (250-300 words: exact physical actions/materials/tools; step-by-step performance; measurable effects with numbers; discovery/learning process; limitations and risks)",
+    "socialImpact": "string (150-200 words: named institutions that regulate it; named enforcer roles; legal framework; black markets; social stratification based on magic use)",
+    "cost": "string (100-150 words: SPECIFIC relational cost with visible change; immediate consequences; long-term effects; why people use it despite damage)",
+    "variants": "string (100-150 words: 2-3 different schools/styles/approaches to magic; regional differences)"
+  },
+
+  "cultures": [
+    {
+      "name": "string (2–4 words; no 'The [Adj] [Noun]')",
+      "population": "string (estimated numbers and distribution)",
+      "description": "string (MINIMUM 300 words, target 300-400 words: comprehensive overview including: settlement patterns, architecture, daily rhythms, food culture, clothing, physical appearance, how Core Law affects everything, specific named settlements, famous/notable practices)",
+      "socialStructure": "string (MINIMUM 150 words, target 150-200 words: hierarchy, family structures, gender roles, coming-of-age practices, social mobility, named social classes/castes)",
+      "economy": "string (MINIMUM 150 words, target 150-200 words: what they produce, trade goods, currency/barter, guild systems, relationship to other cultures economically, named trade routes or markets)",
+      "values": "string (MINIMUM 100 words, target 100-150 words: concrete behaviors/practices showing values in action, taboos, honored behaviors, dispute resolution)",
+      "relationshipToMagic": "string (MINIMUM 100 words, target 100-150 words: how this culture views and uses the magic system, restrictions, celebrated practitioners)",
+      "notableFigures": "string (MINIMUM 100 words, target 100-150 words: 2-3 named historical or current leaders/heroes/villains with brief descriptions)"
+    },
+    {
+      "name": "... SECOND CULTURE (600-800 words total) ...",
+      "population": "...",
+      "description": "...",
+      "socialStructure": "...",
+      "economy": "...",
+      "values": "...",
+      "relationshipToMagic": "...",
+      "notableFigures": "..."
+    },
+    {
+      "name": "... THIRD CULTURE (600-800 words total) ...",
+      "population": "...",
+      "description": "...",
+      "socialStructure": "...",
+      "economy": "...",
+      "values": "...",
+      "relationshipToMagic": "...",
+      "notableFigures": "..."
+    }
+  ],
+
+  "conflicts": {
+    "primary": "string (250-300 words: the main tension - name all sides, their survival needs, the specific ${domain1.toLowerCase()}/${domain2.toLowerCase()} resource at stake, why compromise is structurally impossible, what each must sacrifice, immediate stakes for ordinary families, current flashpoints)",
+    "secondary": [
+      {
+        "name": "string (conflict name)",
+        "description": "string (100-150 words: who's involved, what's at stake, how it complicates the primary conflict)"
+      },
+      {
+        "name": "... SECOND CONFLICT ...",
+        "description": "... (100-150 words) ..."
+      }
+    ],
+    "risingTensions": "string (100-150 words: recent events pushing toward crisis, failed diplomatic attempts, incidents that matter)"
+  },
+
+  "economy": {
+    "overview": "string (200-250 words: major trade goods, economic systems, how Core Law affects commerce, wealth distribution, technological advancement level, named currencies, trade hubs)",
+    "scarcity": "string (100-150 words: what's rare and valuable, why, how it drives conflict)"
+  },
+
+  "dailyLife": {
+    "commonPerson": "string (200-250 words: what a typical day looks like for someone in each culture, meals, work, leisure, how Core Law affects routine, family life, children's upbringing)",
+    "technology": "string (150-200 words: advancement level, notable inventions, how Core Law enables or limits tech, transportation, communication methods)"
+  },
+
+  "characters": [
+    {
+      "name": "string (full name)",
+      "age": "number (years old)",
+      "role": "string (occupation/position)",
+      "culture": "string (which culture they belong to)",
+      "physicalDescription": "string (100-150 words: appearance, clothing, distinguishing features, how Core Law affects their body)",
+      "personality": "string (80-120 words: traits, mannerisms, speech patterns, how they interact with others)",
+      "goal": "string (60-80 words: what they want, what drives them)",
+      "distinctiveTrait": "string (40-60 words: memorable quirk or skill)",
+      "secret": "string (40-60 words: hidden truth or motivation)",
+      "backstory": "string (100-150 words: origin, key formative events, how they came to their current position)"
+    },
+    {
+      "name": "... SECOND CHARACTER (400 words total) ...",
+      "age": 0,
+      "role": "... from different culture ...",
+      "culture": "... different from first ...",
+      "physicalDescription": "...",
+      "personality": "...",
+      "goal": "...",
+      "distinctiveTrait": "...",
+      "secret": "...",
+      "backstory": "..."
+    },
+    {
+      "name": "... THIRD CHARACTER (400 words total) ...",
+      "age": 0,
+      "role": "... from third culture ...",
+      "culture": "... different from first two ...",
+      "physicalDescription": "...",
+      "personality": "...",
+      "goal": "...",
+      "distinctiveTrait": "...",
+      "secret": "...",
+      "backstory": "..."
+    }
+  ],
+
+  "locations": [
+    {
+      "name": "string (evocative location name)",
+      "type": "string (tavern, temple, marketplace, ruin, etc.)",
+      "culture": "string (which culture controls/inhabits this location)",
+      "description": "string (150-200 words: physical appearance, atmosphere, sensory details, history)",
+      "coreLawManifestation": "string (80-100 words: how the Core Law manifests or affects this specific location)",
+      "inhabitants": "string (60-80 words: who lives/works here, typical visitors)",
+      "currentSituation": "string (60-80 words: current events, tensions, or opportunities at this location)",
+      "memorableDetails": ["string (3-5 specific sensory or unique details that make this location memorable)"]
+    },
+    {
+      "name": "... SECOND LOCATION (350 words total) ...",
+      "type": "... different type from first ...",
+      "culture": "... different culture ...",
+      "description": "...",
+      "coreLawManifestation": "...",
+      "inhabitants": "...",
+      "currentSituation": "...",
+      "memorableDetails": ["..."]
+    },
+    {
+      "name": "... THIRD LOCATION (350 words total) ...",
+      "type": "... different type from first two ...",
+      "culture": "... different culture ...",
+      "description": "...",
+      "coreLawManifestation": "...",
+      "inhabitants": "...",
+      "currentSituation": "...",
+      "memorableDetails": ["..."]
+    }
+  ],
+
+  "legends": [
+    {
+      "title": "string (evocative legend title)",
+      "timeframe": "string (when this legend is set: ancient, recent, cyclical)",
+      "culturalOrigin": "string (which culture tells this legend)",
+      "story": "string (250-300 words: the legend itself told in narrative form with specific events and characters)",
+      "moralOrLesson": "string (60-80 words: what this legend teaches)",
+      "culturalSignificance": "string (80-100 words: how this legend affects behavior, beliefs, or conflicts in the present day)",
+      "truthBehind": "string (60-80 words: what really happened vs the myth)"
+    }
+  ],
+
+  "uniqueFeature": "string (150-200 words: gameplay-warping ${domain1.toLowerCase()}/${domain2.toLowerCase()} rule with multiple examples; concrete everyday technology; specific constraints; edge cases; how players must adapt)",
+
+  "secrets": "string (150-200 words: 2-3 hidden truths about the world that aren't common knowledge - deeper workings of Core Law, hidden factions, suppressed history, coming catastrophes)",
+
+  "uniquenessStatement": "string (150-200 words: detailed explanation of why this cannot exist in D&D, Middle-earth, Mistborn, Avatar, or Earthsea; how the fusion of ${domain1.toLowerCase()}-${domain2.toLowerCase()} + this specific magic cost + these particular cultural tensions creates something genuinely novel)"
+}
+
+════════════════════════════════════════════════════════════════════════════════
+⚠️  MANDATORY WORD COUNT REQUIREMENTS - DO NOT SKIP OR ABBREVIATE ⚠️
+════════════════════════════════════════════════════════════════════════════════
+
+MINIMUM REQUIREMENTS (Balanced worldbuilding with pre-generated content):
+• theme: MINIMUM 120 words
+• geography.overview: MINIMUM 150 words
+• geography.majorLocations: 3 locations @ MINIMUM 80 words each
+• history sections: MINIMUM 300 words total
+• magicSystem total: MINIMUM 400 words across all subsections
+• EACH culture: MINIMUM 600 WORDS (3 cultures = MINIMUM 1800 words total) ⚠️  CRITICAL
+• conflicts.primary: MINIMUM 200 words
+• conflicts.secondary: 2 @ MINIMUM 80 words each
+• economy: MINIMUM 200 words total
+• dailyLife: MINIMUM 250 words total
+• EACH character: MINIMUM 400 WORDS (3 characters = MINIMUM 1200 words total) ⚠️  NEW
+• EACH location: MINIMUM 350 WORDS (3 locations = MINIMUM 1050 words total) ⚠️  NEW
+• EACH legend: MINIMUM 450 WORDS (1 legend = MINIMUM 450 words total) ⚠️  NEW
+• uniqueFeature: MINIMUM 120 words
+• secrets: MINIMUM 120 words
+• uniquenessStatement: MINIMUM 120 words
+
+⚠️  ABSOLUTE MINIMUM TOTAL: 5450 WORDS - DO NOT OUTPUT LESS THAN THIS ⚠️
+IDEAL TARGET: 5500-6500 words for maximum quality
+
+CONTENT BREAKDOWN:
+• Cultures: ~1800-2400 words (33% of total)
+• Characters: ~1200-1500 words (22% of total) ⚠️  NEW
+• Locations: ~1050-1350 words (19% of total) ⚠️  NEW
+• Legends: ~450-550 words (8% of total) ⚠️  NEW
+• Other sections: ~950-1200 words (18% of total)
+
+═══════════════════════════════════════════════════════
+GENERATION PROCESS (FOLLOW THESE STEPS)
+═══════════════════════════════════════════════════════
+
+STEP 1: UNDERSTAND THE SCOPE ⚠️  READ THIS CAREFULLY ⚠️
+You are creating a COMPREHENSIVE, READY-TO-EXPLORE world with pre-generated content.
+ABSOLUTE MINIMUM: 5450 words (NEVER output less than this)
+TARGET RANGE: 5500-6500 words for maximum quality
+
+This is NOT a brief overview. This is NOT a world outline.
+This IS a complete, explorable world with living inhabitants, locations, and legends.
+Think: "What would a player need to immediately start exploring this world?"
+
+REQUIRED CONTENT:
+• 3 cultures @ 600-800 words EACH = 1800-2400 words
+• 3 characters @ 400 words EACH = 1200 words ⚠️  CRITICAL - Must include full character details
+• 3 locations @ 350 words EACH = 1050 words ⚠️  CRITICAL - Must include sensory details
+• 1 legend @ 450 words = 450 words ⚠️  CRITICAL - Must include full narrative story
+
+If you output less than 5450 words, YOU HAVE FAILED THE TASK.
+
+STEP 2: Write <reasoning> block
+Complete checklist A-F. Plan your world's structure:
+□ Named elements target: 40-50+ (locations, institutions, resources, phenomena, historical figures, character names, etc.)
+□ Cultures: Plan 3 distinct cultures with 600-800 words EACH
+□ Characters: Plan 3 diverse characters (different cultures, roles) @ 400 words EACH ⚠️  NEW
+□ Locations: Plan 3 varied locations (taverns, temples, ruins, etc.) @ 350 words EACH ⚠️  NEW
+□ Legends: Plan 1 rich narrative legend @ 450 words ⚠️  NEW
+□ Geography: Multiple climate zones, 3 major locations with full descriptions
+□ History: Ancient era + formative conflict + recent events (300-350 words total)
+□ Magic: 4 subsections totaling 400-500 words
+□ Economy: Detailed trade systems, currencies, scarcity (200-250 words)
+□ Conflicts: Primary (200-250 words) + 2 secondary conflicts
+□ Daily life: Comprehensive view of ordinary existence (250-300 words)
+
+STEP 3: Generate COMPREHENSIVE JSON
+Write EVERY field with extraordinary detail:
+- Use specific numbers, measurements, time periods everywhere
+- Name everything: people, places, institutions, resources, events
+- Include sensory details: what things look like, sound like, smell like
+- Show consequences: how the Core Law affects every aspect of life
+- Create depth: mention historical precedents, failed attempts, regional variations
+- Add texture: specific foods, clothing materials, architectural styles, social customs
+
+STEP 4: Output JSON only (no markdown fences)
+
+════════════════════════════════════════════════════════════════════════════════
+⚠️  CRITICAL FINAL CHECK BEFORE OUTPUT ⚠️
+════════════════════════════════════════════════════════════════════════════════
+
+Your JSON response MUST be 5450-6500 words MINIMUM.
+
+COUNT YOUR WORDS NOW:
+- If less than 5450 words → YOU MUST ADD MORE DETAIL (especially to characters, locations, legends!)
+- If 5450-6500 words → Perfect, output it
+- If more than 6500 words → Trim only the most verbose sections
+
+CONTENT CHECK:
+- Culture 1: Is it 600-800 words? If NO → ADD MORE DETAIL
+- Culture 2: Is it 600-800 words? If NO → ADD MORE DETAIL
+- Culture 3: Is it 600-800 words? If NO → ADD MORE DETAIL
+- Character 1-3: Is EACH 400 words? If NO → ADD MORE DETAIL ⚠️  NEW
+- Location 1-3: Is EACH 350 words? If NO → ADD MORE DETAIL ⚠️  NEW
+- Legend 1: Is it 450 words? If NO → ADD MORE DETAIL ⚠️  NEW
+
+DIVERSITY CHECK:
+- Characters: Do they represent different cultures, genders, ages, social classes?
+- Locations: Do they span different cultures and location types (tavern, temple, ruin, market, etc.)?
+- Legend: Does it reveal important aspects of the world?
+
+DO NOT OUTPUT ABBREVIATED OR SUMMARY CONTENT. This is a comprehensive, ready-to-explore world.
+
+═══════════════════════════════════════════════════════
+FINAL DETAIL CHECK BEFORE OUTPUT
+═══════════════════════════════════════════════════════
+Count your named elements. Do you have at least 30-40 of these?
+- Named locations (cities, forests, landmarks)
+- Named institutions (councils, guilds, courts)
+- Named resources (materials, foods, substances)
+- Named phenomena (events, effects, features)
+- Named figures (historical/current leaders, heroes, villains)
+
+If less than 30, add more specific named details to your descriptions.
+
+EXAMPLE has 15+ named elements:
+Harmonic Courts, Tuning Spires, Bellhaven, Singing Canyons, Resonance Wardens, Muted Quarter, Silent Forest, Tuning Ceremony, resonance jewelry, deadwood bark, frequency meditation, resonance bonding, acoustic amphitheaters, crystalline archives, counter-frequencies
+
+Your world should match this density of detail.`;
+  },
+};
+
+/**
+ * Parse world generation response from OpenAI
+ * @param {string} response - Raw response text from OpenAI
+ * @returns {Object} Parsed world data
+ * @throws {Error} If response cannot be parsed
+ */
+export function parseWorldGenerationResponse(response) {
+  let cleaned = ''; // Declare at function scope for error handling
+  try {
+    // Remove reasoning blocks and markdown
+    cleaned = response.trim();
+
+    // Remove <reasoning> blocks
+    cleaned = cleaned.replace(/<reasoning>[\s\S]*?<\/reasoning>/gi, '');
+
+    // Remove markdown code blocks if present
+    cleaned = cleaned.replace(/```json\n?/g, '');
+    cleaned = cleaned.replace(/```\n?/g, '');
+    cleaned = cleaned.trim();
+
+    // Extract JSON object (find first { and last })
+    const firstBrace = cleaned.indexOf('{');
+    const lastBrace = cleaned.lastIndexOf('}');
+    if (firstBrace !== -1 && lastBrace !== -1) {
+      cleaned = cleaned.substring(firstBrace, lastBrace + 1);
+    }
+
+    // Remove "reasoning" JSON key if it exists at the start (GPT-4 sometimes adds this)
+    cleaned = cleaned.replace(/^\{\s*"reasoning"\s*:\s*\{[^}]*\}\s*,\s*/, '{');
+
+    // Fix newlines in JSON string values before parsing
+    // This fixes cases like "text.\n\n  more text" -> "text. more text"
+    let inString = false;
+    let escape = false;
+    let result = '';
+
+    for (let i = 0; i < cleaned.length; i++) {
+      const char = cleaned[i];
+
+      if (escape) {
+        result += char;
+        escape = false;
+        continue;
+      }
+
+      if (char === '\\') {
+        escape = true;
+        result += char;
+        continue;
+      }
+
+      if (char === '"') {
+        inString = !inString;
+        result += char;
+        continue;
+      }
+
+      // If we're inside a string and find a newline, convert to space
+      if (inString && (char === '\n' || char === '\r')) {
+        // Don't add multiple spaces in a row
+        if (result[result.length - 1] !== ' ') {
+          result += ' ';
+        }
+        continue;
+      }
+
+      result += char;
+    }
+
+    cleaned = result;
+
+    // Fix common JSON formatting errors
+    // 1. Remove trailing commas before closing braces or brackets
+    cleaned = cleaned.replace(/,(\s*[}\]])/g, '$1');
+    // 2. Add missing commas between object properties
+    // Pattern: "value" \n  "nextProperty": should become "value",\n  "nextProperty":
+    cleaned = cleaned.replace(/"(\s+)"(\w+)":/g, '",\n  "$2":');
+
+    const world = JSON.parse(cleaned);
+
+    // Validate required fields - updated for new comprehensive schema
+    const requiredFields = [
+      'worldName',
+      'theme',
+      'magicSystem',
+      'cultures',
+      'uniqueFeature',
+      'uniquenessStatement',
+    ];
+    for (const field of requiredFields) {
+      if (!world[field]) {
+        throw new Error(`Missing required field: ${field}`);
+      }
+    }
+    // Note: characters, locations, legends are optional for backward compatibility
+
+    // Validate magic system structure - updated for new schema
+    if (!world.magicSystem.name) {
+      throw new Error('Invalid magicSystem structure - missing name');
+    }
+
+    // Check for either old schema (description) or new schema (fundamentals)
+    if (!world.magicSystem.description && !world.magicSystem.fundamentals) {
+      throw new Error('Invalid magicSystem structure - missing description or fundamentals');
+    }
+
+    // Validate cultures array - updated to allow 3-4 cultures
+    if (!Array.isArray(world.cultures) || world.cultures.length < 2) {
+      throw new Error('Must have at least 2 cultures');
+    }
+
+    for (const culture of world.cultures) {
+      if (!culture.name || !culture.description) {
+        throw new Error('Invalid culture structure - missing name or description');
+      }
+    }
+
+    // Initialize empty arrays for optional new fields if not present (backward compatibility)
+    if (!world.characters) world.characters = [];
+    if (!world.locations) world.locations = [];
+    if (!world.legends) world.legends = [];
+
+    // Validate characters array if present
+    if (world.characters && Array.isArray(world.characters)) {
+      for (const character of world.characters) {
+        if (!character.name || !character.role) {
+          console.warn('Character missing required fields:', character);
+        }
+      }
+    }
+
+    // Validate locations array if present
+    if (world.locations && Array.isArray(world.locations)) {
+      for (const location of world.locations) {
+        if (!location.name || !location.type) {
+          console.warn('Location missing required fields:', location);
+        }
+      }
+    }
+
+    // Validate legends array if present
+    if (world.legends && Array.isArray(world.legends)) {
+      for (const legend of world.legends) {
+        if (!legend.title || !legend.story) {
+          console.warn('Legend missing required fields:', legend);
+        }
+      }
+    }
+
+    return world;
+  } catch (error) {
+    console.error('[Parser] Raw response (first 3000 chars):', response.substring(0, 3000));
+    console.error('[Parser] Raw response (last 1000 chars):', response.substring(Math.max(0, response.length - 1000)));
+    console.error('[Parser] Cleaned JSON attempt:', cleaned.substring(0, 3000));
+    throw new Error(`Failed to parse world generation response: ${error.message}`);
+  }
+}
+
+/**
+ * Format world data for display
+ * @param {Object} world - Parsed world data
+ * @returns {string} Formatted text for display
+ */
+export function formatWorldForDisplay(world) {
+  return `
+🌍 ${world.worldName}
+
+📖 Theme:
+${world.theme}
+
+✨ Magic System: ${world.magicSystem.name}
+${world.magicSystem.description}
+
+👥 Cultures:
+
+1. ${world.cultures[0].name}
+${world.cultures[0].description}
+Values: ${world.cultures[0].values}
+
+2. ${world.cultures[1].name}
+${world.cultures[1].description}
+Values: ${world.cultures[1].values}
+
+⚔️ Central Conflict:
+${world.centralConflict}
+
+🎭 Unique Feature:
+${world.uniqueFeature}
+
+💎 What Makes This World Unique:
+${world.uniquenessStatement}
+`.trim();
+}
+
+// Example outputs for testing and documentation
+export const exampleWorlds = [
+  {
+    worldName: 'The Resonance',
+    theme:
+      'A world where emotions physically manifest as crystalline structures that grow from the ground',
+    magicSystem: {
+      name: 'Emotional Crystallurgy',
+      description:
+        'Magic users sculpt and reshape emotion crystals that sprout from intense feelings. Joy crystals emit light, sorrow crystals store memories, rage crystals burn hot. Mages must balance their own emotions while harvesting and working with these living structures.',
+    },
+    cultures: [
+      {
+        name: 'The Numbed',
+        description:
+          "A society that surgically removes the ability to feel strong emotions, believing passion causes the dangerous crystal growth that destroyed their ancestors. They harvest crystals from the 'Feelers' they consider primitive.",
+        values: 'Control through emotional suppression is the highest virtue.',
+      },
+      {
+        name: 'The Conductors',
+        description:
+          'Nomadic emotional artists who deliberately cultivate intense feelings to grow crystal gardens. They believe emotions are sacred and that the crystals are gifts from their inner selves to the world.',
+        values: 'Authenticity and emotional expression define humanity.',
+      },
+    ],
+    centralConflict:
+      "The Numbed are strip-mining The Conductors' sacred crystal gardens to fuel their emotionless cities, while The Conductors' uncontrolled emotional outbursts spawn dangerous crystal storms that threaten both peoples.",
+    uniqueFeature:
+      'Geography constantly shifts as new emotion crystals erupt from the ground wherever sentient beings experience intense feelings, creating an ever-changing landscape of solidified joy, sorrow, and rage.',
+  },
+];

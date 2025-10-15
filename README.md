@@ -1,26 +1,124 @@
-# AI Worldbuilding Engine
+# AI Worldbuilding Assistant
 
-An AI-powered worldbuilding tool that generates rich, detailed fantasy worlds for creative writers, game designers, and worldbuilding hobbyists. Generate complete worlds with cultures, magic systems, histories, and conflicts in minutes, then expand any aspect on-demand.
+A conversational AI assistant specialized in worldbuilding for authors, game designers, and creative hobbyists. Unlike general AI chatbots, this assistant understands worldbuilding principles and helps you brainstorm, create, and iteratively refine rich fictional worlds through natural conversation.
 
 ## 🚀 Live Demo
 
 **Live App:** https://textgame-bbyaivkna-mishas-projects-0509f3dc.vercel.app
 
-Enter your OpenAI API key and generate comprehensive fantasy worlds! Explore cultures, create characters and locations, generate legends, and export everything as JSON or Markdown for use in your projects.
+Experience the v3.0 conversational worldbuilding interface with AI-guided interviews, quality systems, and progressive world generation!
 
-## Project Overview
+## What Is This?
 
-AI Worldbuilding Engine leverages OpenAI's language models to create complete, interconnected fantasy worlds with depth comparable to published D&D settings—in just 2-3 minutes. Users provide their own API keys, giving them full control over their AI experience and costs.
+Imagine ChatGPT, but specialized for worldbuilding. This assistant:
+- **Understands worldbuilding** - Helps you create consistent, original fictional worlds
+- **Remembers everything** - Maintains full context of your world throughout the conversation
+- **Asks smart questions** - Clarifies your ideas and suggests creative directions
+- **Avoids clichés** - Generates original content, not generic fantasy tropes
+- **Exports your work** - Download worlds as JSON or Markdown for your writing tools
 
-## Features (MVP)
+## Who Is This For?
 
-- **Comprehensive World Generation**: Every world includes 10 detailed sections: theme, geography, history, magic system, cultures, conflicts, economy, daily life, unique features, and hidden secrets
-- **On-Demand Content Creation**: Generate characters, locations, legends, and historical events specific to your world
-- **Culture Exploration**: Dive deep into any culture with expanded daily life, notable figures, and locations
-- **Freeform Questioning**: Ask anything about your world and get coherent, context-aware answers
-- **Export Functionality**: Download complete worlds as JSON or Markdown for integration with Notion, Scrivener, or other tools
-- **Cost Transparency**: Real-time API usage tracking and cost warnings
-- **Mobile-Responsive**: Works seamlessly on desktop and mobile devices
+**Authors** building worlds for novels, short stories, or series
+**Game Designers** creating campaign settings for D&D, Pathfinder, or video games
+**Worldbuilding Hobbyists** who enjoy creating fictional worlds for fun
+**Creative Writers** looking to overcome creative blocks with AI collaboration
+
+## How It Works
+
+1. **Enter your OpenAI API key** - You control costs and own your data
+2. **Start a conversation** - Chat naturally about your worldbuilding needs
+3. **Collaborate with AI** - Brainstorm ideas, generate worlds, iterate on concepts
+4. **Export your world** - Download as JSON or Markdown for external tools
+
+### Example Conversations
+
+**Brainstorming:**
+> "I need ideas for a magic system that's different from typical fantasy."
+>
+> *AI suggests 3-5 unique concepts with explanations*
+
+**World Generation:**
+> "Create a fantasy world with 3 cultures, an unusual magic system, and political conflicts."
+>
+> *AI generates comprehensive world with all elements*
+
+**Iteration:**
+> "Make the magic system more scientific and add economic consequences."
+>
+> *AI revises while maintaining consistency with other established details*
+
+**Expansion:**
+> "Tell me more about daily life in the mountain culture."
+>
+> *AI expands on established culture with consistent details*
+
+**Questioning:**
+> "What would happen if these two cultures went to war?"
+>
+> *AI explores logical implications based on world rules*
+
+## Why Not Just Use ChatGPT?
+
+ChatGPT is powerful but generic. It tends to generate:
+- Overused fantasy tropes (light vs dark, chosen ones, crystal magic)
+- Generic naming patterns ("The [Adj] [Noun]")
+- Shallow worlds lacking internal consistency
+- Responses that don't remember earlier worldbuilding details
+
+This assistant uses specialized prompts and context management to:
+- Generate original, specific, detailed content
+- Maintain world consistency across the entire conversation
+- Provide worldbuilding expertise and guidance
+- Avoid clichés through creative constraints
+
+## Features
+
+### Core Features
+- **Conversational Interface** - Natural chat-based worldbuilding collaboration
+- **Context Management** - AI remembers everything about your world
+- **Specialized Prompts** - Optimized for originality and consistency
+- **Intent Recognition** - Understands brainstorming, generation, iteration, expansion, and questioning
+- **Export Functionality** - Download as JSON or Markdown
+- **Session Management** - Save and load multiple worldbuilding projects
+
+### Quality Features ✨ **Phase 1 Complete**
+
+**Chain-of-Thought Reasoning** (Task 1.1)
+- Structured 5-step reasoning before generation
+- Forces AI to think through implications, conflicts, and specificity
+- Ensures originality checks happen systematically
+
+**Cliché Detection** (Task 1.2)
+- 80+ pattern detection across genres (fantasy, sci-fi, horror, contemporary)
+- Catches: "Chosen one", "Dark lord", "Ancient evil", "The [Adjective] [Noun]"
+- Automatic scoring and actionable feedback
+- Zero API cost (pure pattern matching)
+
+**Genre System** (Task 1.3)
+- 8 supported genres with auto-detection
+- Genre-specific quality priorities (e.g., fantasy emphasizes originality 35%, sci-fi emphasizes implications 35%)
+- Genre-specific cliché warnings
+- Multi-genre blending support
+
+**Sanderson's Laws** (Task 1.4)
+- **Hard Magic** (default): 4 required limitation types (constraints, costs, vulnerabilities, social restrictions)
+- **Soft Magic** (on request): Mystery preservation, no Deus Ex Machina
+- Auto-detects user preference from keywords ("soft magic", "mysterious", etc.)
+- Comprehensive validation and feedback
+
+**Constitutional AI**
+- Self-critique and revision loop
+- 5 quality principles: Originality, Specificity, Implications, Consistency, Mundane Grounding
+- Parallel execution for efficiency
+
+**Expected Impact**: +30-40% quality improvement through targeted guidance
+
+### Technical Features
+- **User-Owned API Keys** - You control costs, no subscription
+- **Client-Side Only** - Your data never leaves your browser
+- **Mobile Responsive** - Works on desktop, tablet, and mobile
+- **Modern Stack** - Svelte 5, Vite 7, Tailwind CSS 4
 
 ## Tech Stack
 
@@ -28,25 +126,26 @@ AI Worldbuilding Engine leverages OpenAI's language models to create complete, i
 - **Build Tool**: Vite 7
 - **Styling**: Tailwind CSS 4
 - **Code Quality**: ESLint + Prettier
-- **Deployment**: Vercel/Netlify (static hosting)
-- **AI Integration**: OpenAI API (GPT-3.5-turbo / GPT-4)
+- **Deployment**: Vercel (static hosting)
+- **AI Integration**: OpenAI API (user-provided keys)
 
 ## Project Structure
 
 ```
 /textgamea
-  /frontend           # Web application code
+  /frontend           # Web application
     /src
-      /components     # Svelte components
-      /lib            # Utility functions and API integration
-      /prompts        # AI prompt templates
-      /assets         # Static assets
+      /components     # Svelte components (ChatInterface, etc.)
+      /lib            # API integration, context management
+      /prompts        # Worldbuilding prompt system
+      /services       # Export, session management
       app.css         # Global styles with Tailwind
       App.svelte      # Root component
-      main.js         # Application entry point
-  /docs              # PRD, architecture, stories
-  .bmad-core/        # BMAD framework
-  .claude/           # Claude Code commands
+      main.js         # Entry point
+  /docs              # Project documentation
+    brief-v3.md      # Project brief (current vision)
+    prd-v3.md        # Product requirements (current)
+    /archive         # Previous versions (v1 game, v2 engine)
 ```
 
 ## Setup Instructions
@@ -54,7 +153,7 @@ AI Worldbuilding Engine leverages OpenAI's language models to create complete, i
 ### Prerequisites
 
 - Node.js 18+ and npm
-- OpenAI API key (get one at https://platform.openai.com/api-keys)
+- OpenAI API key ([get one here](https://platform.openai.com/api-keys))
 
 ### Installation
 
@@ -64,7 +163,7 @@ AI Worldbuilding Engine leverages OpenAI's language models to create complete, i
    cd textgamea
    ```
 
-2. Navigate to the frontend directory:
+2. Navigate to frontend:
    ```bash
    cd frontend
    ```
@@ -74,107 +173,119 @@ AI Worldbuilding Engine leverages OpenAI's language models to create complete, i
    npm install
    ```
 
-4. Start the development server:
+4. Start development server:
    ```bash
    npm run dev
    ```
 
-5. Open your browser to `http://localhost:5173`
+5. Open browser to `http://localhost:5173`
 
 ### Available Scripts
 
-- `npm run dev` - Start development server with hot module replacement
+- `npm run dev` - Start development server with HMR
 - `npm run build` - Build production bundle
 - `npm run preview` - Preview production build locally
 - `npm run lint` - Run ESLint checks
 - `npm run format` - Format code with Prettier
+- `npm test` - Run Playwright tests
 
-## Development Workflow
+## Phase 1: Quality Enhancements ✅ **COMPLETE**
 
-1. **Prompt Engineering** (Weeks 1-3): Create and refine AI prompts for world generation and content expansion
-2. **UI Development** (Weeks 3-4): Build web interface components
-3. **Integration** (Week 5): Connect UI to OpenAI API with error handling
-4. **Testing** (Week 6): Manual testing and prompt refinement
-5. **Polish** (Week 7): Mobile responsive design, cost warnings, edge cases
-6. **Beta Testing** (Week 8): User testing and critical bug fixes
+**Implementation Date**: October 13, 2025
+**Goal**: Improve worldbuilding quality by +30-40% through targeted prompt enhancements
 
-## Environment Variables
+### Completed Tasks
 
-Copy `.env.example` to `.env.local` for local configuration:
+- ✅ **Task 1.0**: Secure API Key Input
+- ✅ **Task 1.1**: Chain-of-Thought Reasoning Integration
+- ✅ **Task 1.2**: Cliché Detection System (80+ patterns)
+- ✅ **Task 1.3**: Genre Selection System (8 genres with auto-detection)
+- ✅ **Task 1.4**: Sanderson Limitation Enforcement (hard + soft magic)
+- ✅ **Task 1.5**: Code Cleanup and Documentation
 
-```bash
-cp .env.example .env.local
-```
+**Details**: See task completion summaries:
+- [Task 1.2 - Cliché Detection](TASK_1.2_CLICHE_DETECTION_COMPLETE.md)
+- [Task 1.3 - Genre System](TASK_1.3_GENRE_SYSTEM_COMPLETE.md)
+- [Task 1.4 - Sanderson's Laws](TASK_1.4_SANDERSON_LAWS_COMPLETE.md)
 
-**Note**: API keys are stored client-side only. No environment variables are required for the application itself - users provide their own OpenAI API keys through the web interface.
+**Test Coverage**: 100% pass rate across all quality systems (38 tests total)
 
-## Deployment
+## Phase 2: Production Integration ✅ **COMPLETE**
 
-The project is configured for one-click deployment to Vercel or Netlify.
+**Implementation Date**: October 13, 2025
+**Goal**: Integrate Phase 1 quality systems into production UI
 
-### Quick Deploy
+### Completed
 
-**Vercel (Recommended):**
-1. Push your code to GitHub
-2. Import project at https://vercel.com/new
-3. Deploy with zero configuration (uses `vercel.json`)
+- ✅ **Automatic Genre Detection** - Detects genre from user input (8 genres)
+- ✅ **Magic Style Detection** - Auto-detects hard vs soft magic
+- ✅ **Genre-Aware Prompts** - System prompts adapt to detected genre
+- ✅ **Sanderson's Laws Integration** - Adds appropriate guidance (hard/soft)
+- ✅ **Cliché Analysis Display** - Shows originality score and detected clichés
+- ✅ **Magic Validation Display** - Shows validation results and suggestions
+- ✅ **Quality Metrics Toggle** - UI panels hidden by default, toggle to view
 
-**Netlify:**
-1. Push your code to GitHub
-2. Import project at https://app.netlify.com/start
-3. Deploy with zero configuration (uses `netlify.toml`)
+**Details**: See [Phase 2 Integration Complete](PHASE_2_INTEGRATION_COMPLETE.md)
 
-**Both platforms provide:**
-- Automatic HTTPS
-- Continuous deployment on git push
-- Free tier (perfect for this project)
-- <3 minute deployment time
+### What Users Get Now
 
-See [DEPLOYMENT.md](DEPLOYMENT.md) for detailed deployment instructions, troubleshooting, and custom domain setup.
+When creating a world, users automatically benefit from:
+- Genre detection displayed in chat (e.g., "Detected: Fantasy, hard magic")
+- Genre-specific worldbuilding guidance applied to generation
+- Cliché analysis (80+ patterns checked) with originality score
+- Magic system validation against Sanderson's Laws
+- Actionable feedback on quality improvements
+
+**Ready for**: User testing and feedback iteration
+
+## Version History
+
+### v3.0 (Current) - AI Worldbuilding Assistant
+**Vision:** Conversational AI specialized for worldbuilding collaboration
+**Status:** In development
+**Docs:** `docs/brief-v3.md`, `docs/prd-v3.md`
+
+### v2.0 (Archived) - AI Worldbuilding Engine
+**Vision:** Structured world generation with button-driven expansion
+**Status:** Archived (pivoted to v3)
+**Docs:** `docs/archive/v2-worldbuilding-engine/`
+
+### v1.0 (Archived) - Text Adventure Game
+**Vision:** Interactive text-based game with AI-generated worlds
+**Status:** Archived (pivoted to v2, then v3)
+**Docs:** `docs/archive/v1-game-concept/`
+
+## Documentation
+
+### Phase 1 Quality Enhancements
+- **[Task 1.2: Cliché Detection](TASK_1.2_CLICHE_DETECTION_COMPLETE.md)** - 80+ pattern detection system
+- **[Task 1.3: Genre System](TASK_1.3_GENRE_SYSTEM_COMPLETE.md)** - 8-genre support with auto-detection
+- **[Task 1.4: Sanderson's Laws](TASK_1.4_SANDERSON_LAWS_COMPLETE.md)** - Hard/soft magic frameworks
+- **[Prompt System README](frontend/src/prompts/README.md)** - Active prompts documentation
+
+### Project Documentation
+- **[Project Brief v3](docs/brief-v3.md)** - Vision, target users, competitive landscape
+- **[PRD v3](docs/prd-v3.md)** - Functional requirements, user stories, technical architecture
+- **[Master Quality Plan](docs/MASTER_QUALITY_IMPLEMENTATION_PLAN.md)** - Complete quality improvement roadmap
+- **[Constitutional AI System](docs/CONSTITUTIONAL_AI_SYSTEM.md)** - Self-critique framework
+- **[Testing Guide](docs/TESTING_GUIDE.md)** - How to test the application
+
+### Research
+- **[Sanderson Research](docs/SANDERSON_WORLDBUILDING_RESEARCH.md)** - Brandon Sanderson's worldbuilding principles
+- **[Prompt Research](docs/PROMPT_RESEARCH_FINDINGS.md)** - Prompt engineering best practices
+- **[Quality Analysis](docs/VARIETY_QUALITY_BESTPRACTICES_ANALYSIS.md)** - Worldbuilding quality benchmarks
 
 ## Contributing
 
-This is currently a solo development project for MVP. Contribution guidelines will be added post-launch.
+This is currently a solo development project. Contribution guidelines will be added after MVP launch.
 
 ## License
 
 MIT License (or your chosen license)
 
-## Roadmap
-
-### Epic 1: Foundation & Prompt Engineering ✅ (Complete)
-- ✅ Project setup and infrastructure (Story 1.1)
-- ✅ OpenAI API integration with retry logic (Story 1.2)
-- ✅ API key storage and retrieval (Story 1.3)
-- ✅ Prompt testing harness (Story 1.4)
-- ✅ World generation prompt (Story 1.5)
-- ✅ World expansion prompts - characters, locations, legends, events (Story 1.6)
-- ✅ Context management & error handling (Story 1.7)
-- ✅ Deployment pipeline configured (Story 1.8)
-
-### Epic 2: Web UI & Worldbuilding Experience ✅ (Complete)
-- ✅ Landing page with API key input
-- ✅ Theme selection screen
-- ✅ World generation with progress tracking
-- ✅ World explorer with organized sections
-- ✅ Culture exploration and expansion
-- ✅ On-demand content generation (characters, locations, legends, historical events)
-- ✅ Freeform world questioning
-- ✅ Export functionality (JSON and Markdown)
-
-### Post-MVP
-- Additional themes (Cyberpunk, Steampunk, Sci-Fi, Horror)
-- Save/load functionality (cloud storage)
-- World sharing features (public gallery, remixing)
-- Multi-AI provider support (Anthropic, local models)
-- User accounts and preferences
-- Advanced prompt customization (tone, complexity, originality)
-- Collaborative worldbuilding (team editing)
-- Image generation (maps, character portraits)
-
 ## Contact
 
-For questions or feedback about AI Worldbuilding Engine, please open an issue or contact [your contact info].
+For questions, feedback, or bug reports, please open an issue or contact [your contact info].
 
 ---
 

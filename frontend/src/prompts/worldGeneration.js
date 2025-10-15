@@ -10,99 +10,120 @@ export const worldGenerationPrompt = {
 
   // Recommended model parameters
   parameters: {
-    model: 'gpt-4o', // Using GPT-4o for extremely detailed, complex worlds (16K output limit)
+    model: 'gpt-4o-2024-11-20', // Using latest GPT-4o with 16K output limit for extremely detailed worlds
     temperature: 0.95, // Maximum creativity for truly unique worlds
-    maxTokens: 5500, // High token limit for detailed multi-page worlds (3400 words ≈ 4533 tokens, plus buffer)
+    maxTokens: 16000, // Increased to 16K for comprehensive world (3 cultures, 3 chars, 3 locs, 1 legend)
   },
 
   // System prompt to set the AI's role and constraints
-  systemPrompt: `You are a creative world-building AI for a fantasy adventure game. Your role is to generate completely unique, imaginative fantasy worlds that avoid common tropes and clichés.
+  systemPrompt: `You are an expert worldbuilding AI designed to help fantasy writers, game masters, and hobbyists create rich, immersive worlds. Your role is to generate detailed, internally consistent fantasy worlds with depth and originality.
+
+This is a STANDARD worldbuilding request - writers need comprehensive details to work with.
+You have 16,000 output tokens available - use them to create a complete, usable world.
+
+CRITICAL: Before generating the world, you MUST think through your approach step-by-step in a <reasoning> section. This ensures internal consistency and originality.
 
 Each world you create must be:
-- ORIGINAL: Avoid copying existing fantasy settings (no Middle-earth, Westeros, etc.)
-- UNIQUE: Create new cultures, magic systems, and conflicts
-- EVOCATIVE: Use vivid, sensory language that sparks imagination
-- COHERENT: Ensure all elements fit together logically
-- CONCISE: Focus on the most interesting and relevant details
+- RICH: Deep cultures, compelling histories, and intricate societies with their own traditions, conflicts, and daily life
+- DIVERSE: Multiple distinct cultures, each with unique values, economies, and social structures
+- COHERENT: All elements fit together logically within the world's internal logic
+- SPECIFIC: Concrete details, measurements, names, and sensory descriptions
+- EVOCATIVE: Vivid, memorable imagery that brings the world to life
+- USABLE: Practical for writers and game masters to build stories within
+- ORIGINAL: Fresh ideas and creative combinations while respecting the fantasy genre
 
-Output your response ONLY as valid JSON with no additional text or markdown.`,
+Focus on creating worlds with depth in geography, history, cultures, magic systems, economies, and conflicts. Each element should feel developed and interconnected, giving writers and hobbyists a rich foundation to explore and expand upon.
 
-  // Main prompt template - professional-grade with randomized domain constraints
+Output format: <reasoning>...</reasoning> followed by JSON (no markdown fences).`,
+
+  // Main prompt template - writer-focused worldbuilding
   getUserPrompt: () => {
-    // Generate random conceptual constraints to force different types of uniqueness each time
-    const conceptDomains = [
-      ['biology', 'architecture'],
-      ['music', 'geology'],
-      ['sound', 'identity'],
-      ['language', 'chemistry'],
-      ['food', 'time'],
-      ['weather', 'consciousness'],
-      ['color', 'mortality'],
-      ['touch', 'causality'],
-      ['pain', 'communication'],
-      ['growth', 'space'],
-      ['decay', 'perception'],
-      ['breath', 'law'],
-      ['heat', 'memory'],
-      ['texture', 'truth'],
-      ['rhythm', 'kinship'],
-    ];
+    return `FANTASY WORLDBUILDING — Professional-Grade World Generation
 
-    // Pick random constraints
-    const domains = conceptDomains[Math.floor(Math.random() * conceptDomains.length)];
-    const domain1 = domains[0].toUpperCase();
-    const domain2 = domains[1].toUpperCase();
+Role & Purpose
+You are creating a detailed fantasy world for writers, game masters, and worldbuilding hobbyists. Generate a rich, internally consistent world with depth, specificity, and originality. Focus on creating diverse cultures, interesting magic systems, compelling conflicts, and detailed geography that provides a solid foundation for storytelling.
 
-    return `PROMPT: ${domain1} & ${domain2} — Radical Worldgen (Professional-Grade)
+The world should feel alive and varied - not everything needs to connect to a single central gimmick. Create depth through diversity and specificity.
 
-Role & Output Format
-You are a world-generator. Produce one unforgettable fantasy world that players remember years later. The world must mechanically fuse ${domain1} with ${domain2} (not flavor), feature deep worldbuilding, and include a robust magic system that changes moment-to-moment play.
-Output: A <reasoning> block explaining how you satisfied core requirements, followed by JSON only (single object, no markdown fences, no preamble, no commentary, no extra keys).
+═══════════════════════════════════════════════════════
+CHAIN-OF-THOUGHT REASONING (REQUIRED BEFORE GENERATION)
+═══════════════════════════════════════════════════════
+
+Before generating the world JSON, you MUST provide structured reasoning in <reasoning> tags:
+
+<reasoning>
+1. CORE CONCEPT: What makes this world unique? What's the hook that sets it apart?
+   - Identify 1-2 distinctive elements (geography, magic, culture, history)
+   - Ensure it's NOT a cliché (no "chosen ones," "ancient evil," "light vs dark")
+
+2. IMPLICATIONS: How does the core concept affect society, economy, and daily life?
+   - Societal effects (class structure, social norms, taboos)
+   - Economic effects (trade, resources, wealth distribution)
+   - Daily life effects (how ordinary people live and work)
+
+3. CONFLICTS: What tensions naturally arise from these implications?
+   - Identify 2-3 conflicts with valid perspectives on all sides
+   - Ensure conflicts are about resources, power, or ideology (not good vs evil)
+   - Consider how conflicts affect different social classes
+
+4. SPECIFICITY: What concrete details will make this feel real?
+   - Numbers (populations, distances, costs, timeframes)
+   - Names (people, places, resources, institutions)
+   - Materials and sensory details (what things look like, smell like, feel like)
+
+5. ORIGINALITY CHECK: How am I avoiding clichés?
+   - List potential clichés in this concept
+   - Identify specific ways I'm subverting or avoiding them
+   - Ensure fresh terminology (not "The [Adjective] [Noun]" naming patterns)
+</reasoning>
+
+After your reasoning, generate the complete world JSON.
+
+Output Format: <reasoning>...</reasoning> followed by JSON (no markdown fences, no extra text).
 
 ═══════════════════════════════════════════════════════
 EXAMPLE OF EXCELLENT WORLD GENERATION (DETAILED, MULTI-PAGE)
 ═══════════════════════════════════════════════════════
 
-Domain Fusion: BREATH mechanizes LAW
-
-THIS EXAMPLE SHOWS THE PROPER LEVEL OF DETAIL AND LENGTH FOR EACH SECTION.
-NOTE: This example has ~2600 words total. Your generation should match this scope.
+THIS EXAMPLE DEMONSTRATES THE LEVEL OF DETAIL, SPECIFICITY, AND DEPTH EXPECTED.
+Study the concrete measurements, sensory details, cultural richness, and internal consistency.
+Target scope: ~4000-5000 words total for your complete world generation.
 
 {
-  "worldName": "Windlaw Dominion",
+  "worldName": "The Shattered Isles",
 
-  "tagline": "Where every exhalation is a legally binding oath, and broken promises become visible scars in the air.",
+  "tagline": "An archipelago of warring city-states where ancient volcanic magic meets ruthless merchant empires and forgotten temple ruins hold dangerous secrets.",
 
-  "theme": "In Windlaw Dominion, breath mechanizes law—every spoken oath binds itself into the air you exhale, creating visible Contract Threads that shimmer between speaker and witness for exactly 28 days. These threads measure 0.3-0.8 millimeters thick and glow in colors corresponding to oath severity: white for minor promises, crimson for life-binding contracts, obsidian for death oaths. The Breath Courts in Vental City use Oath Readers—trained officials who can trace thread trajectories back to their origin point within a 50-meter radius—to settle all legal disputes. When you break an oath, the thread snaps audibly (loud enough to hear from 12 meters away) and leaves a permanent threadburn scar on both your lungs and your skin, reducing your lung capacity by 2-5% per break. After accumulating 20 breaks (40-100% lung damage), most people suffocate within the year.",
+  "theme": "The Shattered Isles are a volcanic archipelago spanning 800 kilometers of treacherous ocean, home to seven major island nations and countless minor settlements. The islands were formed 3,000 years ago when the volcanic god Thal'Karvos shattered a single landmass during the Sundering War, creating hundreds of islands connected by dangerous sea routes. The dominant magic system—Ember Weaving—channels volcanic energy through specially treated obsidian, allowing practitioners to manipulate heat, light, and molten stone. The world is defined by intense merchant rivalry between the wealthy Azurite Trading Confederation and the militaristic Ironshore Empire, religious conflict between Temple-Keepers who worship the old volcanic gods and secular city-states, and the ever-present threat of volcanic eruptions that can destroy entire islands. Ancient ruins scattered across the islands hint at a lost civilization that predates the Sundering.",
 
   "geography": {
-    "overview": "Windlaw Dominion occupies a wind-scoured plateau called the Ventus Flats, sitting 800 meters above sea level and swept by constant easterly winds averaging 35-50 kph. These winds carry everyone's Contract Threads eastward, creating a visible streaming tapestry in the sky that flows toward the Thread Graveyards—massive tangles of expired oath-threads that accumulate in the Eastern Wastes like ethereal tumbleweeds. The plateau's western edge features the Breath Cliffs, 600-meter vertical drops where convicted oathbreakers are thrown so their final exhalation disperses into the void. Three major climate zones exist: the Central Flats (dry, windy grasslands), the Northern Mire (wetland where wind patterns slow and threads accumulate dangerously thick), and the Eastern Wastes (where thread density creates a suffocating atmosphere that kills within 4 hours of exposure). The Windbreak Forests in scattered valleys offer the only shelter from constant winds, but threads tangle in the branches, making every tree a visible history of nearby promises.",
+    "overview": "The Shattered Isles span 800 kilometers east to west across the Ember Sea, containing over 300 islands ranging from tiny volcanic outcroppings to the massive 120-kilometer-long island of Ironshore. The climate is subtropical with monsoon seasons: dry season (6 months) brings clear skies and calm seas ideal for trade, while storm season (6 months) unleashes typhoons that can sink entire merchant fleets. Three major geographical zones define the archipelago: the Western Reaches (older, dormant volcanic islands with rich soil and dense jungle), the Central Chain (active volcanic zone with 12 smoking peaks and frequent eruptions), and the Eastern Shallows (coral atolls and submerged ruins of pre-Sundering cities). The volcanic activity that created the islands left them rich in obsidian, sulfur, and rare fire-gems that power Ember Weaving magic. Deep ocean trenches between islands create dangerous shipping routes where underwater volcanoes and sea serpents threaten merchant vessels.",
     "majorLocations": [
       {
-        "name": "Vental City",
-        "type": "capital city",
-        "description": "Built in concentric circles around the central Breath Courts, Vental City houses 40,000 people in wind-resistant stone buildings with minimal windows. The architecture features Wind Channels—deliberate gaps between structures that direct thread flow eastward, preventing dangerous accumulation. The Grand Thread Plaza at the city's heart displays 2,000 years of royal oaths preserved under glass domes, creating a museum of governance. Oath Readers train in the Academy of Threads, spending 12 years learning to trace thread origins, interpret thread colors, and testify in legal proceedings. The city's Threadburn Hospital treats oathbreakers with lung-reducing surgery, removing damaged tissue to extend life by 5-8 years.",
-        "significance": "The heart of legal authority and thread-based governance for all of Windlaw Dominion."
+        "name": "Azurite City",
+        "type": "merchant capital",
+        "description": "Population 85,000, built on the island of Saphara, Azurite City is the wealthiest port in the Shattered Isles. The city features three tiers: the Lower Docks (warehouses, shipyards, and worker slums built on stilts over the water), the Merchant Quarter (grand trading houses built from imported marble with obsidian inlays), and the Sky District (mansions of the richest merchant families on the volcanic crater rim, 300 meters above sea level). The city's economy revolves around the Obsidian Exchange, a massive marketplace where raw volcanic materials are traded. The Harbor Master's Guild controls all shipping, taking 15% of cargo value as fees. The city's Ember Weavers are strictly regulated—only licensed practitioners can operate, and they primarily serve the wealthy.",
+        "significance": "Economic heart of the archipelago and center of the Azurite Trading Confederation's power."
       },
       {
-        "name": "Silenthollow",
-        "type": "town",
-        "description": "Population 800, located in a deep Windbreak Forest valley where thread accumulation creates a visible canopy overhead. Citizens speak only when absolutely necessary, using hand-signs for daily communication to avoid creating unnecessary threads. The town's economy revolves around Thread Harvesting—carefully collecting expired threads from trees and selling them to artists who weave them into tapestries. However, harvesting is dangerous work; prolonged exposure to high thread density causes Breath Fever, a respiratory illness that kills 12% of harvesters annually. Silenthollow's Whispering Market operates on barter only, as spoken price negotiations would create binding contracts.",
-        "significance": "Primary source of thread materials for art and historical preservation, demonstrating alternative relationship with breath law."
+        "name": "Ironshore Fortress",
+        "type": "military stronghold",
+        "description": "Population 40,000 (20,000 military, 20,000 civilians), located on the strategic island of Ironshore that guards the Central Chain's main shipping route. Built from black volcanic stone and reinforced obsidian, the fortress spans 8 square kilometers of walls, barracks, and weapon foundries. The fortress is home to the Ember Legion—5,000 soldiers trained in combat Ember Weaving who can superheat their weapons and create walls of molten stone. The island's economy is entirely militarized: every citizen either serves in the Legion or supports it through weapon smithing, ship building, or food production. The fortress is ruled by the Iron Council, five generals who control the Ironshore Empire's expansion.",
+        "significance": "Military center of the Ironshore Empire and the most defensible position in the archipelago."
       },
       {
-        "name": "The Breath Cliffs",
-        "type": "execution site",
-        "description": "A 600-meter vertical limestone cliff face on the plateau's western edge, where convicted oathbreakers face execution by defenestration. The cliffs feature natural wind tunnels that amplify the sound of victims' final screams to a 5-kilometer radius, serving as public reminder of legal consequences. At the cliff base, the Thread Garden grows—a bizarre ecosystem where expelled oath-threads from falling victims tangle into the rocks, and peculiar thread-eating lichens have evolved. These lichens, called Oathbreak Moss, glow faintly at night and are harvested by the Cliff Clans for medicinal purposes. The cliffs are marked by 2,000 iron posts, each representing a century of executions.",
-        "significance": "The ultimate deterrent against oathbreaking and the source of rare thread-eating organisms."
+        "name": "The Sundering Temple",
+        "type": "ancient ruin",
+        "description": "Located on the remote island of Thal'Karos, this pre-Sundering temple complex spans 2 square kilometers of crumbling obsidian architecture. The temple features seven pyramid structures, each 60 meters tall, arranged in a perfect circle around a central sacrificial altar. Ancient inscriptions in a dead language cover every surface, and the altar still glows with residual volcanic energy 3,000 years after the Sundering. Temple-Keeper pilgrims visit annually during the Festival of Flames to perform rituals, but explorers who venture too deep into the underground chambers often disappear. Recent expeditions have uncovered chambers containing preserved artifacts suggesting the pre-Sundering civilization possessed Ember Weaving techniques far beyond modern understanding.",
+        "significance": "Holy site for Temple-Keepers and source of ancient magical knowledge that could shift the balance of power."
       }
     ]
   },
 
   "history": {
-    "ancientEra": "Before the Breath Laws, Windlaw Dominion existed as seven warring clan territories constantly engaged in border skirmishes and broken treaties. Historical records from 1,800 years ago describe a world drowning in lies, where promises meant nothing and trust was impossible. The Awakening occurred when a meteorite impact in what is now the Eastern Wastes released atmospheric breath-reactive particles that made spoken oaths physically manifest for the first time. The initial chaos killed 40% of the population as thousands of broken promises simultaneously appeared as thread burns on people's lungs. The Survivors' Council, led by Matriarch Vess Kael, established the First Breath Code: speak only truth, bind promises carefully, and exile those who break oaths repeatedly. They built the first Breath Courts to interpret thread patterns and created the Oath Reader profession.",
-    "formativeConflict": "The Thread Wars (600 years ago) erupted when the Northern Mire clans discovered that speaking underwater prevented thread formation—waterlogged breath doesn't create visible contracts. They used this loophole to make false promises, manipulate trade agreements, and eventually declare war on the Central Flats territories. The war lasted 12 years and killed 60,000 people before Archon Torvald Breath-True invented Thread Tracing—a technique allowing Oath Readers to detect recent underwater oaths by measuring moisture content in residual lung threads. He exposed the Northern Mire's deception at the Council of Winds, leading to mass executions at the Breath Cliffs (400 people thrown in a single week, called the Fall of Lies). The war ended with the Submersion Ban, making underwater oath-speaking punishable by immediate execution. The Mire clans were forced to drain their lakes and live on dry land, fundamentally changing their culture.",
-    "recentHistory": "The last 50 years have seen rising tensions between Traditionalists (who want strict oath laws maintained) and the Freedbreath Movement (advocating for thread-removal technology and reduced legal binding of casual speech). Ten years ago, an inventor named Callista Windless created the Breath Filter—a mask that captures threads before they form, effectively allowing lie-speaking. The Breath Courts declared filters illegal and burned Callista at the Breath Cliffs, but underground filter trade has exploded. Last year, the Thread Plague struck Vental City when someone weaponized concentrated expired threads from the Eastern Wastes, spreading them through city wells. The plague killed 400 people via sudden suffocation and destabilized trust in government thread management."
+    "ancientEra": "The Shattered Isles were once a single massive continent called Tal'Mora, home to an advanced civilization that mastered Ember Weaving on a scale modern practitioners can't comprehend. According to fragmentary records and temple inscriptions, the ancient Tal'Morans built cities powered by volcanic energy, cultivated fire-gems in massive underground gardens, and even controlled volcanic eruptions through massive obsidian obelisks. Three thousand years ago, a catastrophic event known as the Sundering shattered the continent. Temple-Keeper mythology claims the volcanic god Thal'Karvos was angered by mortal hubris and broke the land apart. Secular scholars believe the Tal'Morans attempted a massive magical working to harness all volcanic energy simultaneously, causing a chain reaction of eruptions. The Sundering killed an estimated 90% of the population. Survivors scattered across hundreds of newly-formed islands, and over centuries of isolation, developed into distinct cultures.",
+    "formativeConflict": "The Obsidian Wars (800-600 years ago) erupted when population recovery led to competition for volcanic resources. The wealthy merchant families of what became the Azurite Trading Confederation sought to monopolize obsidian and fire-gem trade through economic control, while military strongmen who became the Ironshore Empire preferred direct conquest. The wars lasted 200 years, devastating islands caught between the two powers. The conflict ended not through victory but exhaustion—both sides realized continued war would destroy the very resources they fought over. The Treaty of Burning Waters (600 years ago) established current borders and trade agreements. However, the treaty is seen as temporary by both sides, and skirmishes over resource-rich islands continue.",
+    "recentHistory": "The last 50 years have seen an uneasy cold war between Azurite and Ironshore. Ten years ago, Azurite merchant explorers discovered a cache of pre-Sundering Ember Weaving texts in the Sundering Temple, describing techniques to amplify volcanic magic tenfold. Ironshore immediately demanded the texts be surrendered or destroyed, fearing Azurite would gain overwhelming magical advantage. Azurite refused. The Temple-Keepers, who consider the temple their sacred site, demand both powers leave it untouched. This three-way standoff has brought the isles to the brink of war. Meanwhile, volcanic activity has increased—three dormant volcanoes erupted in the last decade, destroying two inhabited islands and displacing 15,000 people, fueling Temple-Keeper warnings that the gods are angry."
   }
 }
 
@@ -110,14 +131,14 @@ IMPORTANT: Here is ONE COMPLETE CULTURE showing the required 600-800 word detail
 
   "cultures": [
     {
-      "name": "Vental Oathkeepers",
-      "population": "~35,000 concentrated in Vental City and surrounding plateau settlements",
-      "description": "Oathkeepers live by the principle that speech is sacred and every word carries weight. Their daily routines begin at dawn with the Silence Hour—60 minutes of complete quiet to minimize accidental oath-making before minds are fully awake. They wear Threadcatchers, elaborate bronze jewelry that catches and displays their personal Contract Threads like medals of honor, turning their promises into visible fashion statements. Oathkeeper children attend Thread Schools from age 5-15, learning precise legal language, breath control to minimize thread thickness, and the 47 Traditional Oath Forms used in commerce, marriage, and governance. Their architecture reflects thread-consciousness: buildings feature Thread Galleries where families display their most honored promises under glass, and every home has a Speaking Room—a sealed chamber where private conversations won't create publicly visible threads. They eat Breath-light cuisine—foods designed to minimize talking during meals, served in exact portions so nobody needs to request more and create obligation threads. Their clothing uses Threadweave patterns—embroidered designs showing the most important oaths of their lineage.",
-      "socialStructure": "Hierarchy is determined by Thread Reputation: citizens with fewer threadburn scars and more intact long-term threads (5+ year promises kept) gain social standing and voting rights in Breath Courts. The society divides into four castes: Unbroken (zero threadburns, ~5% of population, eligible for Oath Reader training), Scarred (1-5 threadburns, ~60%, full citizenship), Marked (6-15 threadburns, ~30%, restricted from legal testimony), and Voiceless (16+ threadburns, ~5%, forbidden from making new oaths and essentially exiled from society). Family structures emphasize genetic thread-keeping ability—marriages are arranged to pair families with strong lung capacity and low breaking rates. The coming-of-age ritual at 16 involves making your First Civic Oath in front of the Breath Courts, a binding 10-year promise to serve society (military service, thread harvesting, or public works).",
-      "economy": "The Oathkeeper economy runs on Spoken Contracts—every business transaction creates visible threads, making fraud nearly impossible. They export Thread Art (tapestries woven from expired threads), Oathbreak Moss (medicinal lichen from the Breath Cliffs), and Thread Reading Services (trained Oath Readers hired by foreign governments to verify treaties). They import food (plateau agriculture is poor), metal (no local ore deposits), and most manufactured goods. Their currency is the Breath Mark—small bronze coins stamped with oath phrases, but most high-value transactions use direct promise-exchange: 'I oath to deliver 40 bushels of grain within 28 days' creates a thread serving as immediate payment. The Thread Merchants' Guild controls trade, requiring all members to maintain Unbroken status. The Whispering Market in Silenthollow operates as an alternative economy using hand-signals and barter to avoid thread creation.",
-      "values": "Oathkeepers prize Truth Above All—their central moral teaching is 'Better silence than lies, better death than broken oaths.' They practice Considered Speech: pausing 3 seconds before answering questions to avoid hasty promises. They view threadburns as moral failures, and families of Marked individuals often face social ostracism. However, they also practice Oath Mercy—a legal tradition allowing first-time breakers to undergo lung reduction surgery and public penance rather than execution. Disputes are resolved through Breath Duels: both parties state their case, and Oath Readers examine thread patterns to determine truth. They honor the Voiceless as cautionary figures, believing their suffering prevents others from careless speech.",
-      "relationshipToMagic": "Oathkeepers see thread manipulation as the highest calling. They fund the Academy of Threads where students spend 12 years learning to read thread trajectories, measure thread thickness with precision tools, and trace threads back to speakers. Advanced practitioners can perform Thread Surgery—carefully cutting and preserving broken threads for evidence in court cases. They believe the Awakening (when breath-reactive particles first appeared) was a divine gift forcing humanity toward truth. They strictly forbid Breath Filters (thread-preventing masks) and execute anyone caught using them.",
-      "notableFigures": "High Arbiter Kenric Clearvoice leads the Breath Courts, known for maintaining Unbroken status for 40 years and personally reading 10,000+ oath disputes. Thread-Martyr Callista Windless, executed 10 years ago for inventing Breath Filters, is viewed as either hero or villain depending on factional alignment. General Torvald Breath-True (deceased 594 years ago) invented Thread Tracing and ended the Thread Wars, now honored with a 12-meter bronze statue in Thread Plaza."
+      "name": "Azurite Merchant Families",
+      "population": "~120,000 spread across Azurite City (85,000) and trading outposts on 15 allied islands",
+      "description": "The Azurite merchant culture values wealth, sophistication, and shrewd negotiation above all else. Their daily life revolves around the rhythms of trade: mornings begin with the Opening Bell at the Obsidian Exchange (5 AM), where merchants gather to review overnight shipping reports and negotiate bulk purchases. Wealthy families live in the Sky District, mansion compounds featuring indoor gardens with imported plants, libraries of shipping ledgers going back generations, and shrines to Kethara the Coin-Keeper (goddess of fair deals). Middle-class merchants operate from the Merchant Quarter, conducting business from elegant storefronts while living in apartments above. Even the poorest Azurite citizens aspire to merchant status, working as clerks, dock talliers, or apprentice negotiators while saving to buy their first cargo shipment. Azurite fashion emphasizes displays of wealth: silk robes dyed with rare volcanic pigments (purple from sulfur springs, deep red from fire-gem dust), jewelry featuring polished obsidian and jade imported from distant lands, and elaborate makeup using pearl powder that costs 10 silver coins per gram.",
+      "socialStructure": "Society is divided by wealth into formal tiers tracked by the Merchant Registry. At the top are the Seven Great Houses—merchant dynasties worth millions in gold who control shipping routes, set prices at the Obsidian Exchange, and fill seats on the Harbor Master's Guild. Below them are Licensed Merchants (net worth 10,000+ gold, ~2,000 families) who own trading vessels and warehouses. Independent Traders (net worth 500-10,000 gold, ~8,000 individuals) work from single shops or operate small cargo runs. At the bottom are Apprentices and Workers, many indentured through training contracts that take 10-15 years to pay off. Social mobility is possible but requires exceptional business acumen or a lucky deal. Marriages are strategic alliances between merchant families, with prenuptial contracts specifying exactly what assets each party contributes and how profits will be divided. The coming-of-age ritual at 16 is the First Deal: the young merchant is given 100 silver coins and must turn a profit within one year through trade.",
+      "economy": "Azurites control 60% of inter-island trade in the Shattered Isles. They export finished goods: obsidian tools and weapons, fire-gem jewelry, refined sulfur for alchemy, preserved foods, luxury textiles, and Ember-Woven items. They import raw materials from allied islands: timber, agricultural products, jade, pearls, exotic spices, and slave labor (though slavery is officially illegal in Azurite City, indentured servitude is common). Their currency is the Azurite Mark—silver coins stamped with the city seal, accepted across most of the isles. The wealthy also trade in Letters of Credit issued by the Banking House of Soras, which can be redeemed at any allied port. The Harbor Master's Guild taxes all trade at 15%, using the revenue to maintain the navy that protects shipping routes from pirates. Private merchant families also hire Ember Weavers as ship guards, paying 50 gold per voyage.",
+      "values": "Azurites live by the principle 'A fair deal enriches both parties.' They value cleverness in negotiation, honoring contracts (breaking a written contract results in exile and family shame), and long-term thinking over short-term profit. However, they also believe 'Everything has a price'—morality is flexible when profit is at stake. They practice elaborate business etiquette: formal bowing when concluding deals, ritual tea ceremonies before major negotiations, and the giving of 'good faith gifts' (small valuable items exchanged to show seriousness). Disputes are resolved through Merchant Arbitration—both parties present their case to a neutral merchant judge, who rules based on contract law. Religion is transactional: prayers to Kethara include specific offers ('If you grant me this profitable voyage, I will donate 10% to your temple').",
+      "relationshipToMagic": "Azurites view Ember Weaving as a specialized skill to be purchased like any other service. They operate the Weaver's Academy in Azurite City, training practitioners in practical applications: heating forges for weapon smithing, creating light for night work, defending ships from pirates. Graduates are licensed by the city and pay annual fees. Wealthy families hire personal Weavers as status symbols. However, Azurites strictly regulate magic through the Ember Laws: unauthorized Weaving is punishable by fines or exile, and combat Weaving within city limits carries a death sentence. They view Ironshore's military Ember Weavers with suspicion, believing magic should serve commerce, not conquest.",
+      "notableFigures": "Matriarch Elara Soras (age 67) leads the wealthiest of the Seven Great Houses, controlling 30% of the city's shipping. She is known for her ruthless business tactics and for discovering the pre-Sundering texts in the Sundering Temple. Trade Prince Valen Korthos (age 43) leads the Harbor Master's Guild and commands the Azurite Navy (40 warships). His rivalry with Elara over control of the ancient texts has split the Great Houses into factions. Kessa Draymar (age 28), a rising independent trader, recently turned 100 silver into 5,000 gold in two years through daring spice trades with dangerous outer islands, earning her the title 'Silver Storm' and making her the youngest person ever nominated for a Guild seat."
     }
   ]
 
@@ -140,135 +161,135 @@ This example demonstrates:
 ✓ Actual word counts matching targets (theme ~180 words, geography.overview ~220 words, each location ~110-130 words, history sections totaling ~450 words)
 
 ═══════════════════════════════════════════════════════
+WORLDBUILDING PRINCIPLES FOR FANTASY WRITERS
+═══════════════════════════════════════════════════════
 
-The Core Law: ${domain1} as ${domain2} Mechanism
-Your world must have one physical law where ${domain1.toLowerCase()} mechanizes ${domain2.toLowerCase()}. This is NOT metaphor or flavor—it must be:
+1. SPECIFICITY & DETAIL
+Fantasy writers need concrete details to build on:
+• Use specific measurements (28 days, 600 meters, 35 kph, 0.3mm thick)
+• Name places, people, institutions (Vental City, Breath Courts, Oath Readers)
+• Include sensory details (copper smell, audible snap, visible shimmer)
+• Specify materials and construction (limestone buildings, brass pipes, iron posts)
+• Give numbers for populations, distances, timeframes, costs
 
-• Testable: Include at least one numeric detail (measurement, duration, frequency, threshold)
-• Consequential: Shapes ecosystems, architecture, law, trade, tools, and daily survival
-• Invasive: Characters cannot opt out; it affects every interaction
+2. INTERNAL CONSISTENCY
+Every element should logically connect:
+• Magic systems have clear rules and limitations
+• Cultures adapt to their environment and history
+• Conflicts arise naturally from worldbuilding elements
+• Geography influences culture, economy, and politics
+• Historical events have lasting consequences
 
-Example format: "Civic ${domain2.toLowerCase()} is notarized by ${domain1.toLowerCase()} [specific mechanism with numbers]. [Institution] uses [measurement tool]. Forging ${domain2.toLowerCase()} requires [specific difficult process]."
+3. CULTURAL DEPTH
+Rich cultures make worlds memorable:
+• Distinct customs, values, and daily practices
+• Clear social structures and power dynamics
+• Specific economic systems and trade goods
+• Unique relationships with magic/technology
+• Named settlements, institutions, and traditions
+• Visible markers (clothing, architecture, rituals)
 
-Master Forbidden List (Reject if present anywhere)
+4. MAGIC SYSTEMS
+Support both hard and soft magic approaches:
+• **Hard Magic**: Clear rules, costs, limitations (Sanderson-style)
+  - Specific mechanisms and materials
+  - Measurable costs (time, energy, social consequences)
+  - Consistent applications and limits
+• **Soft Magic**: Mysterious, wondrous, mythological (Tolkien-style)
+  - Preserves sense of wonder and mystery
+  - Ancient powers with unclear limits
+  - Legendary artifacts and abilities
+• **Hybrid**: Mix of both approaches for depth
 
-Faction Structures:
-• "The [Adjective] [Noun]" pattern
-• Names containing: realm, kingdom, empire, dominion, covenant, order (when used as faction names)
+5. COMPELLING CONFLICTS FOR STORIES
+Create meaningful tensions that drive narratives:
+• Resource competition (water, magic, land, trade routes) that forces difficult choices
+• Cultural clashes (values, territories, resources) where both sides have valid points
+• Political power struggles (succession, independence, control) with personal stakes
+• Ideological differences (tradition vs change, magic vs technology, freedom vs security)
+• Class conflicts (rich vs poor, magic-users vs mundane, citizens vs outsiders)
+• Multiple valid perspectives - avoid pure good vs evil
+• Mix of immediate crises and long-simmering tensions
+• Conflicts that create moral dilemmas for characters, not just battles
 
-Endings & Terms:
-• World/faction names ending in: -ia, -or, -mancy, -ium
-• Celestial/brightness: luminous, lumina, radiant, stellar, astral, celestial, ethereal
-• Shadow/dark: umbral, void, shadow (as primary descriptors), tenebrous
-• Generic fantasy: ancient, eternal, forgotten, hidden, sacred
+6. HISTORICAL DEPTH
+Worlds feel real with history:
+• Ancient events that shaped current conflicts
+• Legendary figures and their legacies
+• Cultural golden ages and dark periods
+• Wars, alliances, betrayals with lasting impact
+• Lost civilizations and mysteries
+• Evolution of magic, technology, society
 
-Magic Sources (cannot anchor magic in these):
-• Intangibles: memories, emotions, dreams, time, thoughts, lies
-• Materials: crystals, gems, shards, essence, ether, mana, spirit, soul, life force
-• Verbs: channel, harness, wield, tap, draw from, attune, bond with
+7. ORIGINALITY & FRESHNESS
+Stand out while respecting the genre:
+• Avoid direct copying of popular settings (no Middle-earth clones, no Hogwarts copies)
+• Put unique spins on familiar elements (desert elves, merchant warriors, volcanic druids)
+• Combine concepts in unexpected ways (trading empires + religious zealots + ancient mysteries)
+• Draw from diverse cultural inspirations beyond medieval Europe
+• Create memorable settings without requiring everything to connect to one gimmick
+• Balance familiar tropes with fresh ideas
 
-Conflict Frames (cannot be the primary axis):
-• Light vs dark / order vs chaos / nature vs technology / sky vs underground
-• Balance/imbalance as the problem
-• Destiny, prophecy, or "who's cosmically right"
-• Purity, secrecy, tradition, or unity as core values
-• Preservation vs progress
+8. STORY POTENTIAL
+Create worlds that enable great stories:
+• Multiple sources of conflict at different scales (personal, political, existential)
+• Morally complex factions where both sides have valid points
+• Mysteries and secrets that authors can explore
+• Social tensions that create character dilemmas
+• Power imbalances that drive change
+• Looming threats that create urgency
+• Each culture should provide rich material for protagonist backgrounds
 
-Themes (cannot be primary mechanic):
-• Thoughts/dreams/lies becoming physical objects
-• Time anomalies, loops, or dilation
-• Distance/proximity tied to emotions
-• "What you believe becomes real"
+9. EVOCATIVE NAMING
+Names should inspire and inform:
+• Evocative place names (The Shattered Isles, Ironshore Fortress, Sundering Temple)
+• Memorable character/culture names
+• Meaningful institution names (can be practical OR mythical)
+• Consider linguistic consistency within cultures
+• Names that hint at history or function
+• Mix of familiar and exotic sounds
 
-Required Elements
+10. PRACTICAL WORLDBUILDING
+Writers need usable foundations:
+• Clear power structures and governance
+• Defined economic systems
+• Established social norms and taboos
+• Typical daily life for common people
+• How magic/technology affects society
+• What conflicts drive stories
 
-1. Two Cultures in Resource Clash
-• Mutually incompatible survival needs under the Core Law (not philosophical differences)
-• Each must have: daily practices (food/communication/ritual), visible physical traits, one named settlement/craft, one concrete survival need
-• Test: Can a wise mediator broker a compromise? If yes, make it structurally harder.
+PRE-GENERATION CHECKLIST
+Before writing your world, verify:
 
-2. Magic System with Relational Cost
-Your magic MUST specify:
-✓ Physical action: What you touch/ingest/cut/speak/arrange
-✓ Observable outcome: What others see/hear happen
-✓ Social consequence: Visible, immediate, damaging to relationships (not internal feelings)
-✓ Enforcer: One named social role/institution that tracks/punishes use
-✓ Why it's used: Despite the social cost, what necessity drives people to it?
+□ SETTING: Do I have a vivid, memorable setting that feels distinct?
+□ SPECIFICITY: Have I included concrete measurements, names, and details?
+□ CONSISTENCY: Do all elements logically fit together?
+□ DIVERSE CULTURES: Have I created 3+ rich cultures with distinct values, economies, and practices?
+□ MAGIC: Have I created an interesting, internally consistent magic system?
+□ COMPELLING CONFLICTS: Have I established multiple tensions with valid perspectives on both sides?
+□ STORY HOOKS: Does this world present clear opportunities for character-driven stories?
+□ HISTORY: Have I woven in historical depth and legendary events that influence the present?
+□ ORIGINALITY: Have I avoided clichés and direct copying while respecting the genre?
+□ USABILITY: Can authors immediately start writing characters and stories in this world?
 
-Examples of GOOD costs:
-• "Kin registries auto-expel you when your [measurable thing] drifts >15 [units]"
-• "Every use adds an audible marker; three markers = exile"
-• "Ritual marks you as oath-breaker in official records"
-
-Examples of BAD costs (reject these):
-• "Drains your stamina" (video game HP)
-• "Ages you" (time/essence - forbidden)
-• "Corrupts your soul" (intangible - forbidden)
-• "Costs memories" (banned source)
-• "Requires rare crystals" (banned material)
-
-3. Unwinnable Conflict
-The conflict must be structurally unwinnable:
-✗ "They need the same resource" → compromise: share it
-✓ "Their survival methods destroy each other's prerequisites"
-
-Required: What each side must sacrifice; immediate stakes for ordinary families (not just leaders/heroes).
-
-Pre-Generation Checklist
-Before writing JSON, complete these steps in your <reasoning> block:
-
-A. DETAIL LEVEL VERIFICATION (Study the example above)
-□ Did I review the EXAMPLE and match its level of specificity?
-□ Does my theme include: numeric measurement + named location + named phenomenon?
-□ Does my magic description include: exact duration + named institution + named location + specific consequence?
-□ Does each culture description include: named settlement + named resource + specific daily practice + physical trait?
-□ Total detail count: At least 10 named places/things/institutions across the entire world?
-
-B. Core Law Verification
-□ Does ${domain1.toLowerCase()} mechanically define ${domain2.toLowerCase()} (not symbolically)?
-□ Did I include a specific numeric detail (number + unit)?
-□ Does this law force changes to architecture, law, or daily life?
-□ Is it as mechanically concrete as the example's "heartbeat frequency measured in hertz"?
-
-C. World Material Inventory
-Document these (weave into descriptions, don't list):
-• One ${domain1.toLowerCase()}-reactive natural material (where harvested, what it does)
-• One architectural feature with ${domain1.toLowerCase()} function
-• One crime and its measurable punishment
-• One food/drink and how ${domain1.toLowerCase()} affects it
-• One black market good tied to the Core Law
-
-D. Cultural Texture
-For each culture:
-□ Named settlement or craft guild (like "Bellhaven" or "Silent Forest")
-□ One daily practice: food prep, communication protocol, or ritual (like "frequency meditation every dawn")
-□ Visible physical trait or body modification (like "resonance jewelry" or "ritual scars")
-□ Concrete survival need (like "deadwood bark to mask frequencies")
-□ Unique greeting or communication style (like "place hand over heart and hum")
-
-E. Differentiation Test
-For each major element, ask:
-"Could this appear in D&D, Middle-earth, Mistborn, Avatar, or Earthsea?"
-If YES → Replace it. Name the franchise you're echoing and why it must change.
-
-F. Playability Check
-Read your uniqueFeature. Does it answer:
-"When a player says 'I do X,' what IMMEDIATE consequence does this rule create?"
-Not: "${domain1} shapes society" (lore)
-But: "${domain1} reveals ${domain2}, so [concrete player choice impact]" (gameplay)
-Example: "Standing within 3 meters triggers resonance bonding" creates immediate consequences
+FOR AUTHORS: Your world should answer these story questions:
+• What kinds of protagonists could emerge from each culture?
+• What personal dilemmas would characters face in this society?
+• What mysteries or secrets could drive a plot?
+• What injustices or conflicts could motivate heroism?
+• What would a typical adventure look like here?
 
 JSON Schema (DETAILED MULTI-PAGE WORLD)
 
 {
-  "worldName": "string (1–3 words; evocative; check Forbidden List)",
+  "worldName": "string (1–3 words; evocative and memorable)",
 
-  "tagline": "string (one sentence capturing the essence of this world)",
+  "tagline": "string (one sentence capturing the distinctive essence of this world)",
 
-  "theme": "string (150-200 words: the ${domain1.toLowerCase()}-${domain2.toLowerCase()} law in detail + multiple numeric measurements + 3-5 named natural phenomena + 2-3 named locations + how this affects daily life + environmental effects)",
+  "theme": "string (150-200 words: overview of the world's setting, key features, and what makes it interesting - this could include the dominant magic system, major geographical features, central conflicts, or unique cultural elements. Should paint a vivid picture of what this world is like)",
 
   "geography": {
-    "overview": "string (200-250 words: climate zones, major landforms, how the Core Law shapes geography, named regions, natural resources, dangers)",
+    "overview": "string (200-250 words: climate zones, major landforms, how the world's unique features shape geography, named regions, natural resources, dangers)",
     "majorLocations": [
       {
         "name": "string",
@@ -281,7 +302,7 @@ JSON Schema (DETAILED MULTI-PAGE WORLD)
   },
 
   "history": {
-    "ancientEra": "string (150-200 words: origins, how Core Law was discovered, founding myths, ancient civilizations)",
+    "ancientEra": "string (150-200 words: origins, how world's magic system was discovered, founding myths, ancient civilizations)",
     "formativeConflict": "string (150-200 words: a pivotal historical event that shaped current tensions, named figures, consequences)",
     "recentHistory": "string (100-150 words: last 50-100 years, current state of affairs, rising tensions)"
   },
@@ -298,50 +319,156 @@ JSON Schema (DETAILED MULTI-PAGE WORLD)
     {
       "name": "string (2–4 words; no 'The [Adj] [Noun]')",
       "population": "string (estimated numbers and distribution)",
-      "description": "string (MINIMUM 300 words, target 300-400 words: comprehensive overview including: settlement patterns, architecture, daily rhythms, food culture, clothing, physical appearance, how Core Law affects everything, specific named settlements, famous/notable practices)",
+      "description": "string (MINIMUM 300 words, target 300-400 words: comprehensive overview including: settlement patterns, architecture, daily rhythms, food culture, clothing, physical appearance, specific named settlements, famous/notable practices, and how they interact with magic and technology)",
       "socialStructure": "string (MINIMUM 150 words, target 150-200 words: hierarchy, family structures, gender roles, coming-of-age practices, social mobility, named social classes/castes)",
       "economy": "string (MINIMUM 150 words, target 150-200 words: what they produce, trade goods, currency/barter, guild systems, relationship to other cultures economically, named trade routes or markets)",
       "values": "string (MINIMUM 100 words, target 100-150 words: concrete behaviors/practices showing values in action, taboos, honored behaviors, dispute resolution)",
       "relationshipToMagic": "string (MINIMUM 100 words, target 100-150 words: how this culture views and uses the magic system, restrictions, celebrated practitioners)",
       "notableFigures": "string (MINIMUM 100 words, target 100-150 words: 2-3 named historical or current leaders/heroes/villains with brief descriptions)"
     },
-    "// MANDATORY: Include exactly 3 cultures. EACH CULTURE MUST BE 600-800 WORDS TOTAL (this is NON-NEGOTIABLE)"
+    {
+      "name": "... SECOND CULTURE (600-800 words total) ...",
+      "population": "...",
+      "description": "...",
+      "socialStructure": "...",
+      "economy": "...",
+      "values": "...",
+      "relationshipToMagic": "...",
+      "notableFigures": "..."
+    },
+    {
+      "name": "... THIRD CULTURE (600-800 words total) ...",
+      "population": "...",
+      "description": "...",
+      "socialStructure": "...",
+      "economy": "...",
+      "values": "...",
+      "relationshipToMagic": "...",
+      "notableFigures": "..."
+    }
   ],
 
   "conflicts": {
-    "primary": "string (250-300 words: the main tension - name all sides, their survival needs, the specific ${domain1.toLowerCase()}/${domain2.toLowerCase()} resource at stake, why compromise is structurally impossible, what each must sacrifice, immediate stakes for ordinary families, current flashpoints)",
+    "primary": "string (250-300 words: the main tension driving stories in this world - name all sides with valid motivations, their survival needs, the specific resources at stake, why compromise is difficult but not impossible, what each must sacrifice, immediate stakes for ordinary people, current flashpoints, and why characters from different cultures would view this conflict differently)",
     "secondary": [
       {
         "name": "string (conflict name)",
         "description": "string (100-150 words: who's involved, what's at stake, how it complicates the primary conflict)"
       },
-      "// Include 2-3 secondary conflicts"
+      {
+        "name": "... SECOND CONFLICT ...",
+        "description": "... (100-150 words) ..."
+      }
     ],
     "risingTensions": "string (100-150 words: recent events pushing toward crisis, failed diplomatic attempts, incidents that matter)"
   },
 
   "economy": {
-    "overview": "string (200-250 words: major trade goods, economic systems, how Core Law affects commerce, wealth distribution, technological advancement level, named currencies, trade hubs)",
+    "overview": "string (200-250 words: major trade goods, economic systems, wealth distribution, technological advancement level, named currencies, trade hubs, and how magic or special resources influence trade)",
     "scarcity": "string (100-150 words: what's rare and valuable, why, how it drives conflict)"
   },
 
   "dailyLife": {
-    "commonPerson": "string (200-250 words: what a typical day looks like for someone in each culture, meals, work, leisure, how Core Law affects routine, family life, children's upbringing)",
-    "technology": "string (150-200 words: advancement level, notable inventions, how Core Law enables or limits tech, transportation, communication methods)"
+    "commonPerson": "string (200-250 words: what a typical day looks like for someone in each culture, meals, work, leisure, family life, children's upbringing, and notable aspects of daily routine)",
+    "technology": "string (150-200 words: advancement level, notable inventions, relationship between magic and technology, transportation, communication methods)"
   },
 
-  "uniqueFeature": "string (150-200 words: gameplay-warping ${domain1.toLowerCase()}/${domain2.toLowerCase()} rule with multiple examples; concrete everyday technology; specific constraints; edge cases; how players must adapt)",
+  "characters": [
+    {
+      "name": "string (full name)",
+      "age": "number (years old)",
+      "role": "string (occupation/position)",
+      "culture": "string (which culture they belong to)",
+      "physicalDescription": "string (100-150 words: appearance, clothing, distinguishing features, and any notable physical traits from their culture or profession)",
+      "personality": "string (80-120 words: traits, mannerisms, speech patterns, how they interact with others)",
+      "goal": "string (60-80 words: what they want, what drives them)",
+      "distinctiveTrait": "string (40-60 words: memorable quirk or skill)",
+      "secret": "string (40-60 words: hidden truth or motivation)",
+      "backstory": "string (100-150 words: origin, key formative events, how they came to their current position)"
+    },
+    {
+      "name": "... SECOND CHARACTER (400 words total) ...",
+      "age": 0,
+      "role": "... from different culture ...",
+      "culture": "... different from first ...",
+      "physicalDescription": "...",
+      "personality": "...",
+      "goal": "...",
+      "distinctiveTrait": "...",
+      "secret": "...",
+      "backstory": "..."
+    },
+    {
+      "name": "... THIRD CHARACTER (400 words total) ...",
+      "age": 0,
+      "role": "... from third culture ...",
+      "culture": "... different from first two ...",
+      "physicalDescription": "...",
+      "personality": "...",
+      "goal": "...",
+      "distinctiveTrait": "...",
+      "secret": "...",
+      "backstory": "..."
+    }
+  ],
 
-  "secrets": "string (150-200 words: 2-3 hidden truths about the world that aren't common knowledge - deeper workings of Core Law, hidden factions, suppressed history, coming catastrophes)",
+  "locations": [
+    {
+      "name": "string (evocative location name)",
+      "type": "string (tavern, temple, marketplace, ruin, etc.)",
+      "culture": "string (which culture controls/inhabits this location)",
+      "description": "string (150-200 words: physical appearance, atmosphere, sensory details, history)",
+      "notableFeatures": "string (80-100 words: distinctive elements of this location - magical phenomena, historical significance, unusual architecture, or other memorable aspects)",
+      "inhabitants": "string (60-80 words: who lives/works here, typical visitors)",
+      "currentSituation": "string (60-80 words: current events, tensions, or opportunities at this location)",
+      "memorableDetails": ["string (3-5 specific sensory or unique details that make this location memorable)"]
+    },
+    {
+      "name": "... SECOND LOCATION (350 words total) ...",
+      "type": "... different type from first ...",
+      "culture": "... different culture ...",
+      "description": "...",
+      "magicManifestation": "...",
+      "inhabitants": "...",
+      "currentSituation": "...",
+      "memorableDetails": ["..."]
+    },
+    {
+      "name": "... THIRD LOCATION (350 words total) ...",
+      "type": "... different type from first two ...",
+      "culture": "... different culture ...",
+      "description": "...",
+      "magicManifestation": "...",
+      "inhabitants": "...",
+      "currentSituation": "...",
+      "memorableDetails": ["..."]
+    }
+  ],
 
-  "uniquenessStatement": "string (150-200 words: detailed explanation of why this cannot exist in D&D, Middle-earth, Mistborn, Avatar, or Earthsea; how the fusion of ${domain1.toLowerCase()}-${domain2.toLowerCase()} + this specific magic cost + these particular cultural tensions creates something genuinely novel)"
+  "legends": [
+    {
+      "title": "string (evocative legend title)",
+      "timeframe": "string (when this legend is set: ancient, recent, cyclical)",
+      "culturalOrigin": "string (which culture tells this legend)",
+      "story": "string (250-300 words: the legend itself told in narrative form with specific events and characters)",
+      "moralOrLesson": "string (60-80 words: what this legend teaches)",
+      "culturalSignificance": "string (80-100 words: how this legend affects behavior, beliefs, or conflicts in the present day)",
+      "truthBehind": "string (60-80 words: what really happened vs the myth)"
+    }
+  ],
+
+  "uniqueFeature": "string (150-200 words: a distinctive aspect of this world that affects daily life, with concrete examples, specific constraints, edge cases, and practical implications)",
+
+  "secrets": "string (150-200 words: 2-3 hidden truths about the world that aren't common knowledge - deeper workings of world's magic system, hidden factions, suppressed history, coming catastrophes)",
+
+  "uniquenessStatement": "string (150-200 words: explanation of what makes this world distinctive and original, how it stands apart from common fantasy settings, what fresh storytelling opportunities it provides, and what kinds of stories authors could tell here that they couldn't tell elsewhere)"
 }
 
 ════════════════════════════════════════════════════════════════════════════════
 ⚠️  MANDATORY WORD COUNT REQUIREMENTS - DO NOT SKIP OR ABBREVIATE ⚠️
 ════════════════════════════════════════════════════════════════════════════════
 
-MINIMUM REQUIREMENTS (Balanced for detailed, multi-page worlds):
+MINIMUM REQUIREMENTS (Balanced worldbuilding with pre-generated content):
 • theme: MINIMUM 120 words
 • geography.overview: MINIMUM 150 words
 • geography.majorLocations: 3 locations @ MINIMUM 80 words each
@@ -352,36 +479,51 @@ MINIMUM REQUIREMENTS (Balanced for detailed, multi-page worlds):
 • conflicts.secondary: 2 @ MINIMUM 80 words each
 • economy: MINIMUM 200 words total
 • dailyLife: MINIMUM 250 words total
+• EACH character: MINIMUM 400 WORDS (3 characters = MINIMUM 1200 words total) ⚠️  NEW
+• EACH location: MINIMUM 350 WORDS (3 locations = MINIMUM 1050 words total) ⚠️  NEW
+• EACH legend: MINIMUM 450 WORDS (1 legend = MINIMUM 450 words total) ⚠️  NEW
 • uniqueFeature: MINIMUM 120 words
 • secrets: MINIMUM 120 words
 • uniquenessStatement: MINIMUM 120 words
 
-⚠️  ABSOLUTE MINIMUM TOTAL: 2800 WORDS - DO NOT OUTPUT LESS THAN THIS ⚠️
-IDEAL TARGET: 3000-3400 words for maximum quality
+TARGET: 3500-4500 words for comprehensive worldbuilding
+This is reasonable and expected for a complete fantasy world foundation.
 
-The cultures section alone should be ~1800-2400 words (60% of total content).
-If your cultures are less than 600 words each, YOU MUST ADD MORE DETAIL.
+CONTENT BREAKDOWN:
+• Cultures: ~1800-2400 words (33% of total)
+• Characters: ~1200-1500 words (22% of total) ⚠️  NEW
+• Locations: ~1050-1350 words (19% of total) ⚠️  NEW
+• Legends: ~450-550 words (8% of total) ⚠️  NEW
+• Other sections: ~950-1200 words (18% of total)
 
 ═══════════════════════════════════════════════════════
 GENERATION PROCESS (FOLLOW THESE STEPS)
 ═══════════════════════════════════════════════════════
 
 STEP 1: UNDERSTAND THE SCOPE ⚠️  READ THIS CAREFULLY ⚠️
-You are creating a MULTI-PAGE, DEEPLY DETAILED world.
-ABSOLUTE MINIMUM: 2800 words (NEVER output less than this)
-TARGET RANGE: 3000-3400 words for maximum quality
+You are creating a COMPREHENSIVE, READY-TO-EXPLORE world with pre-generated content.
+ABSOLUTE MINIMUM: 5450 words (NEVER output less than this)
+TARGET RANGE: 5500-6500 words for maximum quality
 
-This is NOT a brief overview. This is NOT a summary.
-This IS a comprehensive, multi-page worldbuilding document.
-Think: "What would a game designer need to run a 6-month campaign in this world?"
+This is NOT a brief overview. This is NOT a world outline.
+This IS a complete, explorable world with living inhabitants, locations, and legends.
+Think: "What would a player need to immediately start exploring this world?"
 
-CULTURES ARE THE HEART: Each of the 3 cultures MUST be 600-800 words (1800-2400 words total).
-If you write cultures shorter than 600 words each, YOU HAVE FAILED THE TASK.
+REQUIRED CONTENT:
+• 3 cultures @ 600-800 words EACH = 1800-2400 words
+• 3 characters @ 400 words EACH = 1200 words ⚠️  CRITICAL - Must include full character details
+• 3 locations @ 350 words EACH = 1050 words ⚠️  CRITICAL - Must include sensory details
+• 1 legend @ 450 words = 450 words ⚠️  CRITICAL - Must include full narrative story
+
+If you output less than 5450 words, YOU HAVE FAILED THE TASK.
 
 STEP 2: Write <reasoning> block
 Complete checklist A-F. Plan your world's structure:
-□ Named elements target: 30-40+ (locations, institutions, resources, phenomena, historical figures)
+□ Named elements target: 40-50+ (locations, institutions, resources, phenomena, historical figures, character names, etc.)
 □ Cultures: Plan 3 distinct cultures with 600-800 words EACH
+□ Characters: Plan 3 diverse characters (different cultures, roles) @ 400 words EACH ⚠️  NEW
+□ Locations: Plan 3 varied locations (taverns, temples, ruins, etc.) @ 350 words EACH ⚠️  NEW
+□ Legends: Plan 1 rich narrative legend @ 450 words ⚠️  NEW
 □ Geography: Multiple climate zones, 3 major locations with full descriptions
 □ History: Ancient era + formative conflict + recent events (300-350 words total)
 □ Magic: 4 subsections totaling 400-500 words
@@ -394,7 +536,7 @@ Write EVERY field with extraordinary detail:
 - Use specific numbers, measurements, time periods everywhere
 - Name everything: people, places, institutions, resources, events
 - Include sensory details: what things look like, sound like, smell like
-- Show consequences: how the Core Law affects every aspect of life
+- Show consequences: how different elements of the world (magic, geography, history, culture) interconnect and influence each other
 - Create depth: mention historical precedents, failed attempts, regional variations
 - Add texture: specific foods, clothing materials, architectural styles, social customs
 
@@ -404,19 +546,27 @@ STEP 4: Output JSON only (no markdown fences)
 ⚠️  CRITICAL FINAL CHECK BEFORE OUTPUT ⚠️
 ════════════════════════════════════════════════════════════════════════════════
 
-Your JSON response MUST be 2800-3400 words MINIMUM.
+Your JSON response MUST be 5450-6500 words MINIMUM.
 
 COUNT YOUR WORDS NOW:
-- If less than 2800 words → YOU MUST ADD MORE DETAIL (especially to cultures!)
-- If 2800-3400 words → Perfect, output it
-- If more than 3400 words → Trim only the most verbose sections
+- If less than 5450 words → YOU MUST ADD MORE DETAIL (especially to characters, locations, legends!)
+- If 5450-6500 words → Perfect, output it
+- If more than 6500 words → Trim only the most verbose sections
 
-CULTURE CHECK:
+CONTENT CHECK:
 - Culture 1: Is it 600-800 words? If NO → ADD MORE DETAIL
 - Culture 2: Is it 600-800 words? If NO → ADD MORE DETAIL
 - Culture 3: Is it 600-800 words? If NO → ADD MORE DETAIL
+- Character 1-3: Is EACH 400 words? If NO → ADD MORE DETAIL ⚠️  NEW
+- Location 1-3: Is EACH 350 words? If NO → ADD MORE DETAIL ⚠️  NEW
+- Legend 1: Is it 450 words? If NO → ADD MORE DETAIL ⚠️  NEW
 
-DO NOT OUTPUT ABBREVIATED OR SUMMARY CONTENT. This is a detailed worldbuilding document.
+DIVERSITY CHECK:
+- Characters: Do they represent different cultures, genders, ages, social classes?
+- Locations: Do they span different cultures and location types (tavern, temple, ruin, market, etc.)?
+- Legend: Does it reveal important aspects of the world?
+
+DO NOT OUTPUT ABBREVIATED OR SUMMARY CONTENT. This is a comprehensive, ready-to-explore world.
 
 ═══════════════════════════════════════════════════════
 FINAL DETAIL CHECK BEFORE OUTPUT
@@ -445,7 +595,16 @@ Your world should match this density of detail.`;
  */
 export function parseWorldGenerationResponse(response) {
   let cleaned = ''; // Declare at function scope for error handling
+  let reasoning = null; // Extract Chain-of-Thought reasoning
+
   try {
+    // Extract reasoning block before removing it (Chain-of-Thought feature)
+    const reasoningMatch = response.match(/<reasoning>([\s\S]*?)<\/reasoning>/i);
+    if (reasoningMatch) {
+      reasoning = reasoningMatch[1].trim();
+      console.log('[CoT] Chain-of-Thought reasoning extracted:', reasoning.substring(0, 100) + '...');
+    }
+
     // Remove reasoning blocks and markdown
     cleaned = response.trim();
 
@@ -517,20 +676,19 @@ export function parseWorldGenerationResponse(response) {
 
     const world = JSON.parse(cleaned);
 
-    // Validate required fields - updated for new detailed schema
+    // Validate required fields - updated for new comprehensive schema
     const requiredFields = [
       'worldName',
       'theme',
       'magicSystem',
       'cultures',
-      'uniqueFeature',
-      'uniquenessStatement',
     ];
     for (const field of requiredFields) {
       if (!world[field]) {
         throw new Error(`Missing required field: ${field}`);
       }
     }
+    // Note: uniqueFeature, uniquenessStatement, characters, locations, legends are optional
 
     // Validate magic system structure - updated for new schema
     if (!world.magicSystem.name) {
@@ -553,7 +711,51 @@ export function parseWorldGenerationResponse(response) {
       }
     }
 
-    return world;
+    // Initialize empty arrays for optional new fields if not present (backward compatibility)
+    if (!world.characters) world.characters = [];
+    if (!world.locations) world.locations = [];
+    if (!world.legends) world.legends = [];
+
+    // Validate characters array if present
+    if (world.characters && Array.isArray(world.characters)) {
+      for (const character of world.characters) {
+        if (!character.name || !character.role) {
+          console.warn('Character missing required fields:', character);
+        }
+      }
+    }
+
+    // Validate locations array if present
+    if (world.locations && Array.isArray(world.locations)) {
+      for (const location of world.locations) {
+        if (!location.name || !location.type) {
+          console.warn('Location missing required fields:', location);
+        }
+      }
+    }
+
+    // Validate legends array if present
+    if (world.legends && Array.isArray(world.legends)) {
+      for (const legend of world.legends) {
+        if (!legend.title || !legend.story) {
+          console.warn('Legend missing required fields:', legend);
+        }
+      }
+    }
+
+    // Return both world data and reasoning (Chain-of-Thought)
+    // Backwards compatible: if code only expects world, it will work
+    // New code can access reasoning if desired
+    return {
+      world,
+      reasoning,
+      // Also attach reasoning to world object for convenience
+      _metadata: {
+        reasoning,
+        generatedAt: new Date().toISOString(),
+        hasChainOfThought: Boolean(reasoning)
+      }
+    };
   } catch (error) {
     console.error('[Parser] Raw response (first 3000 chars):', response.substring(0, 3000));
     console.error('[Parser] Raw response (last 1000 chars):', response.substring(Math.max(0, response.length - 1000)));
@@ -590,11 +792,8 @@ Values: ${world.cultures[1].values}
 ⚔️ Central Conflict:
 ${world.centralConflict}
 
-🎭 Unique Feature:
-${world.uniqueFeature}
-
-💎 What Makes This World Unique:
-${world.uniquenessStatement}
+${world.uniqueFeature ? `🎭 Unique Feature:\n${world.uniqueFeature}\n\n` : ''}💎 What Makes This World Unique:
+${world.uniquenessStatement || 'This world offers a unique combination of elements that provides rich opportunities for storytelling.'}
 `.trim();
 }
 

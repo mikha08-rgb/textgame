@@ -1,235 +1,204 @@
 import { test, expect } from '@playwright/test';
 
 /**
- * Smoke Tests - Critical User Flow
- * These tests verify the app doesn't have breaking issues
+ * Smoke Tests - New Chat-First Interface
+ * These tests verify basic UI loads without making actual API calls
  */
 
-test.describe('Smoke Tests - Critical Flows', () => {
-  let apiKey;
+test.describe('Smoke Tests - UI Loading', () => {
+  test('should load landing page with API key input', async ({ page }) => {
+    await page.goto('http://localhost:5173/');
 
-  test.beforeAll(() => {
-    apiKey = process.env.OPENAI_API_KEY;
+    // Check page loaded
+    await expect(page).toHaveTitle(/frontend/);
+
+    // Check for main heading
+    await expect(page.locator('h1')).toContainText('AI Adventure Engine');
+
+    // Check for API key input
+    await expect(page.locator('#api-key')).toBeVisible();
+
+    // Check for Continue button
+    await expect(page.locator('button:has-text("Continue")')).toBeVisible();
+
+    console.log('✅ Landing page loads correctly');
   });
 
-  test('complete user flow: API key → theme → world generation', async ({ page }) => {
-    test.setTimeout(300000); // 5 minutes
+  test('should enable Continue button with valid API key format', async ({ page }) => {
+    await page.goto('http://localhost:5173/');
 
-    if (!apiKey) {
-      test.skip('No API key provided');
-      return;
-    }
+    // Initially button should be disabled
+    await expect(page.locator('button:has-text("Continue")')).toBeDisabled();
 
-    console.log('\n🔥 SMOKE TEST: Complete User Flow\n');
+    // Enter a validly formatted API key
+    await page.fill('#api-key', 'sk-test123456789012345678901234567890123456789012345678');
 
-    // Track any console errors
-    const consoleErrors = [];
-    const consoleWarnings = [];
+    // Button should now be enabled
+    await expect(page.locator('button:has-text("Continue"):not([disabled])')).toBeVisible();
 
-    page.on('console', msg => {
-      if (msg.type() === 'error') consoleErrors.push(msg.text());
-      if (msg.type() === 'warning') consoleWarnings.push(msg.text());
-    });
-
-    page.on('pageerror', error => {
-      consoleErrors.push(`PAGE ERROR: ${error.message}`);
-    });
-
-    // Step 1: Load app
-    console.log('Step 1: Loading app...');
-    await page.goto('/');
-    await page.waitForLoadState('networkidle');
-
-    // Check no errors on load
-    expect(consoleErrors.length).toBe(0);
-    console.log('✓ App loaded without errors\n');
-
-    // Step 2: Enter API key
-    console.log('Step 2: Entering API key...');
-    const input = await page.waitForSelector('input[type="password"]');
-    expect(input).toBeTruthy();
-
-    await page.fill('input[type="password"]', apiKey);
-
-    const continueBtn = await page.locator('button:has-text("Continue")');
-    await expect(continueBtn).toBeVisible();
-    await continueBtn.click();
-    console.log('✓ API key submitted\n');
-
-    // Step 3: Select theme
-    console.log('Step 3: Selecting theme...');
-    await page.waitForSelector('text=Choose Your Adventure', { timeout: 10000 });
-
-    const fantasyBtn = await page.locator('button:has-text("Fantasy")');
-    await expect(fantasyBtn).toBeVisible();
-    await fantasyBtn.click();
-    console.log('✓ Theme selected\n');
-
-    const startBtn = await page.locator('button:has-text("Start Adventure")');
-    await expect(startBtn).toBeVisible();
-    await startBtn.click();
-    console.log('✓ Adventure started\n');
-
-    // Step 4: Wait for world generation
-    console.log('Step 4: Waiting for world generation...');
-
-    // Check for loading indicator
-    const loading = await page.waitForSelector('text=/Conjuring|Forging|Crafting/', { timeout: 10000 });
-    expect(loading).toBeTruthy();
-    console.log('✓ Loading indicator shown\n');
-
-    // Wait for world name to appear
-    await page.waitForSelector('h1', { timeout: 200000 });
-    const worldName = await page.locator('h1').first().textContent();
-    expect(worldName).toBeTruthy();
-    expect(worldName.length).toBeGreaterThan(0);
-    console.log(`✓ World generated: "${worldName}"\n`);
-
-    // Step 5: Verify world content
-    console.log('Step 5: Verifying world content...');
-
-    // Check for export buttons
-    const exportJSON = await page.locator('button:has-text("Export JSON")');
-    await expect(exportJSON).toBeVisible();
-
-    const exportMD = await page.locator('button:has-text("Export Markdown")');
-    await expect(exportMD).toBeVisible();
-    console.log('✓ Export buttons present\n');
-
-    // Check for generation buttons
-    const genChar = await page.locator('button:has-text("Generate Character")');
-    const genLoc = await page.locator('button:has-text("Generate Location")');
-
-    const hasGenerationButtons = (await genChar.count() > 0) || (await genLoc.count() > 0);
-    expect(hasGenerationButtons).toBe(true);
-    console.log('✓ Generation buttons present\n');
-
-    // Final check for errors
-    console.log('Step 6: Final error check...');
-    expect(consoleErrors.length).toBe(0);
-    console.log('✓ No console errors during entire flow\n');
-
-    console.log('═'.repeat(60));
-    console.log('✅ SMOKE TEST PASSED - No breaking issues!');
-    console.log('═'.repeat(60) + '\n');
+    console.log('✅ API key format validation works');
   });
 
-  test('app handles page refresh correctly', async ({ page }) => {
-    if (!apiKey) {
-      test.skip('No API key provided');
-      return;
-    }
+  test('should show worldbuilding studio with valid API key in localStorage', async ({ page }) => {
+    await page.goto('http://localhost:5173/');
 
-    console.log('\n🔥 SMOKE TEST: Page Refresh Handling\n');
+    // Pre-populate localStorage with a test API key using the correct format
+    // The app uses 'ai_adventure_api_key' with Base64 obfuscation
+    await page.evaluate(() => {
+      const testKey = 'sk-test123456789012345678901234567890';
+      const obfuscated = 'aae_v1_' + btoa(testKey); // Match apiKeyStorage.js format
+      localStorage.setItem('ai_adventure_api_key', obfuscated);
+    });
 
-    // Enter API key
-    await page.goto('/');
-    await page.fill('input[type="password"]', apiKey);
-    await page.click('button:has-text("Continue")');
-    await page.waitForSelector('text=Choose Your Adventure');
-
-    console.log('✓ Logged in\n');
-
-    // Refresh page
-    console.log('Refreshing page...');
+    // Reload to pick up the stored key
     await page.reload();
-    await page.waitForLoadState('networkidle');
 
-    // Should still be on theme selection (API key persisted)
-    const hasThemeSelection = await page.locator('text=Choose Your Adventure').count();
-    expect(hasThemeSelection).toBeGreaterThan(0);
-    console.log('✓ API key persisted after refresh\n');
+    // Should now show the worldbuilding studio
+    await expect(page.locator('.studio-layout')).toBeVisible({ timeout: 5000 });
 
-    console.log('✅ REFRESH TEST PASSED\n');
+    // Check for chat header
+    await expect(page.locator('h1')).toContainText('Worldbuilding Studio');
+
+    console.log('✅ Chat interface loads with stored API key');
   });
 
-  test('export functionality works', async ({ page }) => {
-    test.setTimeout(300000);
+  test('should display welcome message and starter prompts', async ({ page }) => {
+    await page.goto('http://localhost:5173/');
 
-    if (!apiKey) {
-      test.skip('No API key provided');
-      return;
-    }
+    await page.evaluate(() => {
+      const testKey = 'sk-test123456789012345678901234567890';
+      const obfuscated = 'aae_v1_' + btoa(testKey);
+      localStorage.setItem('ai_adventure_api_key', obfuscated);
+    });
 
-    console.log('\n🔥 SMOKE TEST: Export Functionality\n');
+    await page.reload();
+    await expect(page.locator('.studio-layout')).toBeVisible({ timeout: 5000 });
 
-    // Quick flow to get to world view
-    await page.goto('/');
-    await page.fill('input[type="password"]', apiKey);
-    await page.click('button:has-text("Continue")');
-    await page.waitForSelector('text=Choose Your Adventure');
-    await page.click('button:has-text("Fantasy")');
-    await page.click('button:has-text("Start Adventure")');
-    await page.waitForSelector('h1', { timeout: 200000 });
+    // Check for welcome section
+    await expect(page.locator('.welcome-section')).toBeVisible();
+    await expect(page.locator('text=Let\'s Build Your World')).toBeVisible();
 
-    console.log('✓ World generated\n');
+    // Check for starter prompts
+    const starterPrompts = await page.locator('.starter-prompt-btn').count();
+    expect(starterPrompts).toBeGreaterThan(0);
 
-    // Test JSON export
-    console.log('Testing JSON export...');
-    const [jsonDownload] = await Promise.all([
-      page.waitForEvent('download'),
-      page.click('button:has-text("Export JSON")')
-    ]);
-
-    const jsonFilename = jsonDownload.suggestedFilename();
-    expect(jsonFilename).toMatch(/\.json$/);
-    console.log(`✓ JSON export: ${jsonFilename}\n`);
-
-    // Test Markdown export
-    console.log('Testing Markdown export...');
-    const [mdDownload] = await Promise.all([
-      page.waitForEvent('download'),
-      page.click('button:has-text("Export Markdown")')
-    ]);
-
-    const mdFilename = mdDownload.suggestedFilename();
-    expect(mdFilename).toMatch(/\.md$/);
-    console.log(`✓ Markdown export: ${mdFilename}\n`);
-
-    console.log('✅ EXPORT TEST PASSED\n');
+    console.log(`✅ Welcome section shows ${starterPrompts} starter prompts`);
   });
 
-  test('settings can be opened and API key cleared', async ({ page }) => {
-    test.setTimeout(300000);
+  test('should have functional chat input and send button', async ({ page }) => {
+    await page.goto('http://localhost:5173/');
 
-    if (!apiKey) {
-      test.skip('No API key provided');
-      return;
-    }
+    await page.evaluate(() => {
+      const testKey = 'sk-test123456789012345678901234567890';
+      const obfuscated = 'aae_v1_' + btoa(testKey);
+      localStorage.setItem('ai_adventure_api_key', obfuscated);
+    });
 
-    console.log('\n🔥 SMOKE TEST: Settings Management\n');
+    await page.reload();
+    await expect(page.locator('.studio-layout')).toBeVisible({ timeout: 5000 });
 
-    // Get to world view
-    await page.goto('/');
-    await page.fill('input[type="password"]', apiKey);
-    await page.click('button:has-text("Continue")');
-    await page.waitForSelector('text=Choose Your Adventure');
-    await page.click('button:has-text("Fantasy")');
-    await page.click('button:has-text("Start Adventure")');
-    await page.waitForSelector('h1', { timeout: 200000 });
+    // Check for chat input
+    const input = page.locator('input[placeholder*="Describe"]');
+    await expect(input).toBeVisible();
+    await expect(input).toBeEnabled();
 
-    console.log('✓ World generated\n');
+    // Type into input
+    await input.fill('Test message');
+    const inputValue = await input.inputValue();
+    expect(inputValue).toBe('Test message');
 
-    // Open settings
-    console.log('Opening settings...');
-    const settingsBtn = page.locator('button[aria-label="Settings"]');
-    await settingsBtn.click();
-    await page.waitForTimeout(500);
+    // Check send button appears and is enabled
+    await expect(page.locator('button:has-text("Send")')).toBeEnabled();
 
-    const settingsVisible = await page.locator('text=Settings').count();
-    expect(settingsVisible).toBeGreaterThan(0);
-    console.log('✓ Settings opened\n');
+    console.log('✅ Chat input and send button functional');
+  });
 
-    // Close settings
-    console.log('Closing settings...');
-    const closeBtn = page.locator('button:has-text("Close")');
-    await closeBtn.click();
-    await page.waitForTimeout(500);
+  test('should show empty world preview initially', async ({ page }) => {
+    await page.goto('http://localhost:5173/');
 
-    const settingsClosed = await page.locator('text=API Key Management').count();
-    expect(settingsClosed).toBe(0);
-    console.log('✓ Settings closed\n');
+    await page.evaluate(() => {
+      const testKey = 'sk-test123456789012345678901234567890';
+      const obfuscated = 'aae_v1_' + btoa(testKey);
+      localStorage.setItem('ai_adventure_api_key', obfuscated);
+    });
 
-    console.log('✅ SETTINGS TEST PASSED\n');
+    await page.reload();
+    await expect(page.locator('.studio-layout')).toBeVisible({ timeout: 5000 });
+
+    // Check for empty preview
+    await expect(page.locator('.empty-preview')).toBeVisible();
+    await expect(page.locator('text=Your World Will Appear Here')).toBeVisible();
+
+    console.log('✅ Empty world preview displays correctly');
+  });
+
+  test('should have proper split-screen layout', async ({ page }) => {
+    await page.goto('http://localhost:5173/');
+
+    await page.evaluate(() => {
+      const testKey = 'sk-test123456789012345678901234567890';
+      const obfuscated = 'aae_v1_' + btoa(testKey);
+      localStorage.setItem('ai_adventure_api_key', obfuscated);
+    });
+
+    await page.reload();
+    await expect(page.locator('.studio-layout')).toBeVisible({ timeout: 5000 });
+
+    // Check for chat panel
+    await expect(page.locator('.chat-panel')).toBeVisible();
+
+    // Check for world preview panel
+    await expect(page.locator('.world-preview-panel')).toBeVisible();
+
+    console.log('✅ Split-screen layout renders correctly');
+  });
+
+  test('should allow clicking starter prompts to fill input', async ({ page }) => {
+    await page.goto('http://localhost:5173/');
+
+    await page.evaluate(() => {
+      const testKey = 'sk-test123456789012345678901234567890';
+      const obfuscated = 'aae_v1_' + btoa(testKey);
+      localStorage.setItem('ai_adventure_api_key', obfuscated);
+    });
+
+    await page.reload();
+    await expect(page.locator('.studio-layout')).toBeVisible({ timeout: 5000 });
+
+    // Click first starter prompt
+    const firstPrompt = page.locator('.starter-prompt-btn').first();
+    const promptText = await firstPrompt.textContent();
+    await firstPrompt.click();
+
+    // Check input was filled
+    const inputValue = await page.locator('input[placeholder*="Describe"]').inputValue();
+    expect(inputValue).toBe(promptText);
+
+    console.log('✅ Starter prompts fill chat input correctly');
   });
 });
+
+test.describe('Smoke Tests - Settings', () => {
+  test('should open settings modal', async ({ page }) => {
+    await page.goto('http://localhost:5173/');
+
+    // Click settings button
+    await page.click('button[aria-label="Settings"]');
+
+    // Wait for settings modal
+    await page.waitForTimeout(500);
+
+    // Check settings content is visible
+    const settingsVisible = await page.locator('text=Settings').count();
+    expect(settingsVisible).toBeGreaterThan(0);
+
+    console.log('✅ Settings modal opens');
+  });
+});
+
+console.log('\n' + '='.repeat(60));
+console.log('SMOKE TESTS SUMMARY');
+console.log('='.repeat(60));
+console.log('These tests verify the new chat-first UI loads correctly.');
+console.log('They do NOT test actual AI worldbuilding (requires valid API key).');
+console.log('='.repeat(60) + '\n');

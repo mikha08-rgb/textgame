@@ -59,7 +59,8 @@
         model: worldGenerationPrompt.parameters.model,
         temperature: worldGenerationPrompt.parameters.temperature,
         maxTokens: worldGenerationPrompt.parameters.maxTokens,
-        timeout: 180000 // 180 seconds (3 minutes) for world generation
+        timeout: 180000, // 180 seconds (3 minutes) for world generation
+        forceJSON: true // Enforce JSON mode to prevent "I'm sorry" responses
       });
 
       console.log('[GameInit] World generation complete');
@@ -75,11 +76,19 @@
       }];
 
       // Parse the JSON response using the robust parser from worldGeneration.js
-      let parsedWorld;
+      let parsedWorld, reasoning;
       try {
         // Import the parser
         const { parseWorldGenerationResponse } = await import('../prompts/worldGeneration.js');
-        parsedWorld = parseWorldGenerationResponse(worldResult.text);
+        const parseResult = parseWorldGenerationResponse(worldResult.text);
+
+        // Extract world and Chain-of-Thought reasoning
+        parsedWorld = parseResult.world;
+        reasoning = parseResult.reasoning;
+
+        if (reasoning) {
+          console.log('[GameInit] Chain-of-Thought reasoning received:', reasoning.substring(0, 200) + '...');
+        }
       } catch (parseError) {
         console.error('[GameInit] Failed to parse world data:', parseError);
         throw new Error(`Generated world data was not in valid format: ${parseError.message}`);

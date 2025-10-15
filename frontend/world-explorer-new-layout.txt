@@ -1,0 +1,247 @@
+    <!-- World Content - Single Page Scroll -->
+    <div class="space-y-6">
+
+      <!-- SECTION: World Overview -->
+      <div class="bg-white rounded-lg shadow-md p-6">
+        <h2 class="text-3xl font-bold text-gray-900 mb-6 border-b-2 border-purple-200 pb-3">World Overview</h2>
+
+        <div class="space-y-6">
+          <!-- Theme -->
+          <div>
+            <h3 class="text-xl font-semibold text-gray-900 mb-2">Setting</h3>
+            <p class="text-gray-700 leading-relaxed whitespace-pre-line">{world.theme}</p>
+          </div>
+
+          <!-- Geography (if exists) -->
+          {#if world.geography}
+            <div class="bg-green-50 rounded-lg p-4">
+              <h3 class="text-xl font-semibold text-gray-900 mb-2">Geography</h3>
+              <p class="text-gray-700 leading-relaxed whitespace-pre-line mb-4">{world.geography.overview}</p>
+            </div>
+          {/if}
+
+          <!-- Magic System -->
+          <div class="bg-purple-50 rounded-lg p-4">
+            <h3 class="text-xl font-semibold text-gray-900 mb-2">Magic: {world.magicSystem.name}</h3>
+            <p class="text-gray-700 leading-relaxed whitespace-pre-line">
+              {world.magicSystem.fundamentals || world.magicSystem.description}
+            </p>
+          </div>
+
+          <!-- Conflicts (if exists) -->
+          {#if world.conflicts}
+            <div class="bg-red-50 rounded-lg p-4">
+              <h3 class="text-xl font-semibold text-gray-900 mb-2">Main Conflict</h3>
+              <p class="text-gray-700 leading-relaxed whitespace-pre-line">{world.conflicts.primary}</p>
+            </div>
+          {/if}
+        </div>
+      </div>
+
+      <!-- SECTION: Cultures -->
+      <div class="bg-white rounded-lg shadow-md p-6">
+        <h2 class="text-3xl font-bold text-gray-900 mb-6 border-b-2 border-purple-200 pb-3">Cultures</h2>
+
+        <div class="space-y-4">
+          {#each world.cultures as culture}
+            <div class="border-2 border-gray-200 rounded-lg overflow-hidden">
+              <!-- Culture Header (always visible) -->
+              <button
+                onclick={() => toggleCulture(culture.name)}
+                class="w-full p-4 text-left bg-gray-50 hover:bg-gray-100 transition-colors"
+              >
+                <div class="flex items-center justify-between">
+                  <div>
+                    <h3 class="text-2xl font-semibold text-gray-900">{culture.name}</h3>
+                    {#if culture.population}
+                      <p class="text-sm text-gray-600">Population: {culture.population}</p>
+                    {/if}
+                  </div>
+                  <svg
+                    class="w-6 h-6 text-gray-600 transform transition-transform {expandedCultures.has(culture.name) ? 'rotate-180' : ''}"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                  </svg>
+                </div>
+              </button>
+
+              <!-- Culture Content (collapsible) -->
+              {#if expandedCultures.has(culture.name)}
+                <div class="p-4 border-t-2 border-gray-200">
+                  <p class="text-gray-700 leading-relaxed mb-4 whitespace-pre-line">{culture.description}</p>
+
+                  <div class="grid md:grid-cols-2 gap-4 mt-4">
+                    {#if culture.values}
+                      <div class="bg-gray-50 rounded p-3">
+                        <h4 class="font-semibold text-gray-900 text-sm mb-2">Values</h4>
+                        <p class="text-gray-700 text-sm">{culture.values}</p>
+                      </div>
+                    {/if}
+                    {#if culture.economy}
+                      <div class="bg-gray-50 rounded p-3">
+                        <h4 class="font-semibold text-gray-900 text-sm mb-2">Economy</h4>
+                        <p class="text-gray-700 text-sm">{culture.economy}</p>
+                      </div>
+                    {/if}
+                  </div>
+
+                  <!-- Show expanded details if loaded -->
+                  {#if expansions.cultureDetails[culture.name]}
+                    {@const details = expansions.cultureDetails[culture.name]}
+                    <div class="mt-4 pt-4 border-t-2 border-gray-200">
+                      <h4 class="font-semibold text-gray-900 mb-2">Daily Life</h4>
+                      <p class="text-gray-700 text-sm mb-4 whitespace-pre-line">{details.dailyLife}</p>
+
+                      {#if details.notableFigures && details.notableFigures.length > 0}
+                        <h4 class="font-semibold text-gray-900 mb-2">Notable Figures</h4>
+                        <div class="grid md:grid-cols-2 gap-3">
+                          {#each details.notableFigures as figure}
+                            <div class="bg-purple-50 rounded p-3">
+                              <p class="font-semibold text-sm">{figure.name}</p>
+                              <p class="text-xs text-gray-600">{figure.role}</p>
+                              <p class="text-xs text-gray-700 mt-1">{figure.description}</p>
+                            </div>
+                          {/each}
+                        </div>
+                      {/if}
+                    </div>
+                  {:else if !isGenerating}
+                    <button
+                      onclick={() => expandCulture(culture.name)}
+                      class="mt-4 px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors text-sm"
+                    >
+                      Load More Details
+                    </button>
+                  {/if}
+                </div>
+              {/if}
+            </div>
+          {/each}
+        </div>
+      </div>
+
+      <!-- SECTION: Characters -->
+      {#if world.characters?.length > 0 || expansions.characters.length > 0}
+        <div id="characters-section" class="bg-white rounded-lg shadow-md p-6">
+          <div class="flex items-center justify-between mb-6 border-b-2 border-purple-200 pb-3">
+            <h2 class="text-3xl font-bold text-gray-900">Characters</h2>
+            <button
+              onclick={() => generateCharacter()}
+              disabled={isGenerating}
+              class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors disabled:bg-gray-400 text-sm"
+            >
+              Generate More
+            </button>
+          </div>
+
+          <div class="grid md:grid-cols-2 gap-4">
+            {#each [...(world.characters || []), ...expansions.characters] as character}
+              <div class="border border-gray-200 rounded-lg p-4">
+                <h3 class="text-xl font-bold text-gray-900">{character.name}</h3>
+                <p class="text-sm text-gray-600 mb-3">{character.age} years • {character.role} • {character.culture}</p>
+                <p class="text-gray-700 text-sm mb-2">{character.physicalDescription}</p>
+                <div class="text-xs text-gray-600 mt-2">
+                  <strong>Goal:</strong> {character.goal}
+                </div>
+              </div>
+            {/each}
+          </div>
+        </div>
+      {/if}
+
+      <!-- SECTION: Locations -->
+      {#if world.locations?.length > 0 || expansions.locations.length > 0}
+        <div id="locations-section" class="bg-white rounded-lg shadow-md p-6">
+          <div class="flex items-center justify-between mb-6 border-b-2 border-purple-200 pb-3">
+            <h2 class="text-3xl font-bold text-gray-900">Locations</h2>
+            <button
+              onclick={() => generateLocation()}
+              disabled={isGenerating}
+              class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors disabled:bg-gray-400 text-sm"
+            >
+              Generate More
+            </button>
+          </div>
+
+          <div class="space-y-4">
+            {#each [...(world.locations || []), ...expansions.locations] as location}
+              <div class="border border-gray-200 rounded-lg p-4">
+                <h3 class="text-xl font-bold text-gray-900">{location.name}</h3>
+                <p class="text-sm text-gray-600 mb-3">{location.type}</p>
+                <p class="text-gray-700">{location.description}</p>
+              </div>
+            {/each}
+          </div>
+        </div>
+      {/if}
+
+      <!-- SECTION: Legends -->
+      {#if world.legends?.length > 0 || expansions.legends.length > 0}
+        <div id="legends-section" class="bg-white rounded-lg shadow-md p-6">
+          <div class="flex items-center justify-between mb-6 border-b-2 border-purple-200 pb-3">
+            <h2 class="text-3xl font-bold text-gray-900">Legends & Myths</h2>
+            <button
+              onclick={() => generateLegend()}
+              disabled={isGenerating}
+              class="px-4 py-2 bg-yellow-600 text-white rounded-md hover:bg-yellow-700 transition-colors disabled:bg-gray-400 text-sm"
+            >
+              Generate More
+            </button>
+          </div>
+
+          <div class="space-y-4">
+            {#each [...(world.legends || []), ...expansions.legends] as legend}
+              <div class="border border-gray-200 rounded-lg p-4 bg-gradient-to-br from-yellow-50 to-orange-50">
+                <h3 class="text-xl font-bold text-gray-900 mb-2">{legend.title}</h3>
+                <p class="text-sm text-gray-600 italic mb-3">{legend.timeframe}</p>
+                <p class="text-gray-800 leading-relaxed whitespace-pre-line">{legend.story}</p>
+              </div>
+            {/each}
+          </div>
+        </div>
+      {/if}
+
+      <!-- Quick Generate Buttons (if no content generated yet) -->
+      {#if !world.characters?.length && !expansions.characters.length && !world.locations?.length && !expansions.locations.length}
+        <div class="bg-white rounded-lg shadow-md p-6">
+          <h2 class="text-2xl font-bold text-gray-900 mb-4">Start Exploring</h2>
+          <p class="text-gray-600 mb-4">Generate content to bring your world to life:</p>
+          <div class="grid md:grid-cols-3 gap-3">
+            <button
+              onclick={() => generateCharacter()}
+              disabled={isGenerating}
+              class="px-4 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors disabled:bg-gray-400"
+            >
+              Generate Character
+            </button>
+            <button
+              onclick={() => generateLocation()}
+              disabled={isGenerating}
+              class="px-4 py-3 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors disabled:bg-gray-400"
+            >
+              Generate Location
+            </button>
+            <button
+              onclick={() => generateLegend()}
+              disabled={isGenerating}
+              class="px-4 py-3 bg-yellow-600 text-white rounded-md hover:bg-yellow-700 transition-colors disabled:bg-gray-400"
+            >
+              Generate Legend
+            </button>
+          </div>
+        </div>
+      {/if}
+
+    </div>
+  </div>
+
+  <!-- Chat Interface -->
+  <ChatInterface
+    {world}
+    {apiKey}
+    onContentUpdate={handleChatContentUpdate}
+  />
+</div>

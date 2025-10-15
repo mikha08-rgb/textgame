@@ -71,6 +71,7 @@ const calculateBackoff = (attempt) => {
  * @param {number} [config.temperature=0.7] - Temperature for generation
  * @param {number} [config.timeout=30000] - Timeout in milliseconds
  * @param {number} [config.maxRetries=3] - Maximum number of retries
+ * @param {boolean} [config.forceJSON=false] - Force JSON mode (requires "json" in prompt)
  * @returns {Promise<string>} Generated text from the API
  * @throws {OpenAIAPIError} Various error types based on failure mode
  */
@@ -83,6 +84,7 @@ export async function generateText({
   temperature = 0.7,
   timeout = 30000,
   maxRetries = 3,
+  forceJSON = false,
 }) {
   // Validate required parameters
   if (!apiKey || typeof apiKey !== 'string' || apiKey.trim() === '') {
@@ -121,6 +123,19 @@ export async function generateText({
           ]
         : [{ role: 'user', content: prompt }];
 
+      // Build request body
+      const requestBody = {
+        model,
+        messages,
+        max_tokens: maxTokens,
+        temperature,
+      };
+
+      // Add JSON mode if requested (requires "json" or "JSON" to appear in messages)
+      if (forceJSON) {
+        requestBody.response_format = { type: 'json_object' };
+      }
+
       // Make the API call
       const response = await fetch('https://api.openai.com/v1/chat/completions', {
         method: 'POST',
@@ -128,12 +143,7 @@ export async function generateText({
           'Content-Type': 'application/json',
           Authorization: `Bearer ${apiKey}`,
         },
-        body: JSON.stringify({
-          model,
-          messages,
-          max_tokens: maxTokens,
-          temperature,
-        }),
+        body: JSON.stringify(requestBody),
         signal: controller.signal,
       });
 
